@@ -32,7 +32,9 @@
             ],
             "scripts": [
               "src/assets/js/sim-view-js/sim-view-js.js"
-            ]
+            ],
+            "sourceMap": true,
+            "vendorSourceMap": true
           },
           "configurations": {
             "production": {
