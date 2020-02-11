@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
+import { MatSnackBarModule, MatSnackBar } from "@angular/material";
 
 @Component({
   selector: 'app-nav',
@@ -16,6 +17,14 @@ export class NavComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private snackBar: MatSnackBar) {}
+
+  notImplementedMessage(): void {
+    this.snackBar.open('Not yet implemented', null, {
+      duration: 2000
+    });
+  }
 
 }

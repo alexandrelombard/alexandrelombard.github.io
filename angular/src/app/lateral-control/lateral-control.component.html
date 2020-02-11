@@ -1,6 +1,16 @@
 <mat-card>
   <mat-card-title>Lateral Control Simulations</mat-card-title>
+  <mat-card-subtitle>
+    The lateral control simulations show the application of several lateral control algorithms to a single autonomous
+    car, to highlight the difference of behavior between the different strategies.
+  </mat-card-subtitle>
   <mat-card-content>
+    <mat-form-field>
+      <mat-label>Control Strategy</mat-label>
+      <mat-select [(ngModel)]="selectedStrategy">
+        <mat-option *ngFor="let strategy of strategies" [value]="strategy.value">{{strategy.viewValue}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
   </mat-card-content>
 </mat-card>

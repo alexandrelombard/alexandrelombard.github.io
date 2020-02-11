@@ -12,6 +12,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from "@angular/material/card";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatRadioModule } from "@angular/material/radio";
+import { MatSelectModule } from "@angular/material/select";
+import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { NavComponent } from './nav/nav.component';
 import { LateralControlComponent } from './lateral-control/lateral-control.component';
 
@@ -32,7 +36,11 @@ import { LateralControlComponent } from './lateral-control/lateral-control.compo
     MatIconModule,
     MatListModule,
     MatCardModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatRadioModule,
+    MatSelectModule,
+    FormsModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
