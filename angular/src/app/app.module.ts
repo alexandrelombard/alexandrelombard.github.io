@@ -13,11 +13,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from "@angular/material/card";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavComponent } from './nav/nav.component';
+import { LateralControlComponent } from './lateral-control/lateral-control.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavComponent
+    NavComponent,
+    LateralControlComponent
   ],
   imports: [
     BrowserModule,
