@@ -1,9 +1,11 @@
 <mat-card>
   <mat-card-title>Lateral Control Simulations</mat-card-title>
+
   <mat-card-subtitle>
     The lateral control simulations show the application of several lateral control algorithms to a single autonomous
     car, to highlight the difference of behavior between the different strategies.
   </mat-card-subtitle>
+
   <mat-card-content>
     <mat-form-field>
       <mat-label>Control Strategy</mat-label>
@@ -13,4 +15,6 @@
     </mat-form-field>
 
   </mat-card-content>
+
+  <canvas #canvasElement id="sim-view-js-canvas" width="800" height="400"></canvas>
 </mat-card>

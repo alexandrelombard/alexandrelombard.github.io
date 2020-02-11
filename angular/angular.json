@@ -30,7 +30,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/sim-view-js/sim-view-js.js"
+            ]
           },
           "configurations": {
             "production": {

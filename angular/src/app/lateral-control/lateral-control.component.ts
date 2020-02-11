@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ViewChild, ElementRef } from '@angular/core';
+
+import * as simviewjs from "src/assets/js/sim-view-js/sim-view-js.js"
 
 export interface LateralControlStrategy {
   value: string,
@@ -14,6 +17,8 @@ export class LateralControlComponent implements OnInit {
 
   constructor() { }
 
+  @ViewChild('canvasElement', {static: true}) canvasElement: ElementRef;
+
   selectedStrategy: string;
 
   strategies: LateralControlStrategy[] = [
@@ -24,6 +29,9 @@ export class LateralControlComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedStrategy = this.strategies[0].value;
+
+    let canvasElementId = (<HTMLCanvasElement>this.canvasElement.nativeElement).id;
+
   }
 
 }
