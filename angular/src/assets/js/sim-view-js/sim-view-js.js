@@ -381,6 +381,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var x = tmp$ / (tmp$_0 + Math_0.pow($receiver_0, 2.0));
     return Math_0.asin(x);
   }
+  function stanleyLateralControl(angleError, lateralError, velocity, gain) {
+    if (gain === void 0)
+      gain = 5.0;
+    var x = gain * lateralError / velocity;
+    return angleError + Math_0.atan(x);
+  }
   function ReachGoalBehavior(vehicle, driverBehavioralState, longitudinalControl, lateralControl) {
     ReachGoalBehavior$Companion_getInstance();
     if (longitudinalControl === void 0)
@@ -419,6 +425,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     tmp$_0 = vehicle.wheelBase / 2.0;
     tmp$_1 = -vehicle.wheelBase / 2.0;
     return purePursuit(tmp$, vehicle.direction.alpha, lookaheadPoint.xy, tmp$_0, tmp$_1);
+  };
+  ReachGoalBehavior$Companion.prototype.stanleyLateralControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
+    var laneWidth = 3.5;
+    var laneOffset = driverBehavioralState.currentRoad.laneOffset_za3lpa$(driverBehavioralState.currentLaneIndex);
+    var lane = offset(driverBehavioralState.currentRoad.points, laneOffset * laneWidth);
+    var frontAxlePosition = toVector3D(vehicle.position.plus_8a09bi$(Vector2D_init(vehicle.wheelBase / 2.0, vehicle.direction)));
+    var projectionData = project(lane, frontAxlePosition);
+    var distance = projectionData.distance;
+    var polylineSegment = projectionData.segmentEnd.minus_8a09cd$(projectionData.segmentBegin);
+    var side = projectionData.segmentEnd.minus_8a09cd$(projectionData.segmentBegin).xy.angle_8a09bi$(frontAxlePosition.minus_8a09cd$(projectionData.segmentBegin).xy);
+    var left = side > 0.0;
+    var angleError = polylineSegment.xy.angle_8a09bi$(vehicle.direction);
+    var lateralError = distance * (left ? 1 : -1);
+    return stanleyLateralControl(angleError, lateralError, vehicle.velocity.norm, 5.0);
   };
   ReachGoalBehavior$Companion.prototype.curvatureFollowingLateralControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
     var laneWidth = 3.5;
@@ -474,6 +494,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var package$lateral = package$behavior.lateral || (package$behavior.lateral = {});
   package$lateral.lombardLateralControl_3v5prj$ = lombardLateralControl;
   package$lateral.purePursuit_7v0duu$ = purePursuit;
+  package$lateral.stanleyLateralControl_6y0v78$ = stanleyLateralControl;
   Object.defineProperty(ReachGoalBehavior, 'Companion', {get: ReachGoalBehavior$Companion_getInstance});
   package$behavior.ReachGoalBehavior = ReachGoalBehavior;
   package$behavior.reachGoalBehavior_pdvrc7$ = reachGoalBehavior;
@@ -7660,7 +7681,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var ReachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.ReachGoalBehavior;
   var getCallableRef = Kotlin.getCallableRef;
   var reachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.reachGoalBehavior_pdvrc7$;
-  var equals = Kotlin.equals;
   var Pair = Kotlin.kotlin.Pair;
   var ensureNotNull = Kotlin.ensureNotNull;
   var IntersectionBuilder$ConnectedSide = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.IntersectionBuilder.ConnectedSide;
@@ -7676,8 +7696,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var get_lastIndex = Kotlin.kotlin.collections.get_lastIndex_55thoc$;
   Color.prototype = Object.create(Enum.prototype);
   Color.prototype.constructor = Color;
-  WebviewSimulationController$LateralControlModel.prototype = Object.create(Enum.prototype);
-  WebviewSimulationController$LateralControlModel.prototype.constructor = WebviewSimulationController$LateralControlModel;
+  LateralControlModel.prototype = Object.create(Enum.prototype);
+  LateralControlModel.prototype.constructor = LateralControlModel;
   function context2D($receiver) {
     var tmp$;
     return Kotlin.isType(tmp$ = $receiver.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
@@ -8018,56 +8038,56 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
   }
   Color.valueOf_61zpoe$ = Color$valueOf;
-  function WebviewSimulationController() {
-    this.dragging_0 = false;
-    this.dragOrigin_0 = new Pair(0.0, 0.0);
-    this.currentScaleFactor_0 = 1.0;
-    this.lateralControlModel = WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_getInstance();
-  }
-  function WebviewSimulationController$LateralControlModel(name, ordinal) {
+  function LateralControlModel(name, ordinal) {
     Enum.call(this);
     this.name$ = name;
     this.ordinal$ = ordinal;
   }
-  function WebviewSimulationController$LateralControlModel_initFields() {
-    WebviewSimulationController$LateralControlModel_initFields = function () {
+  function LateralControlModel_initFields() {
+    LateralControlModel_initFields = function () {
     };
-    WebviewSimulationController$LateralControlModel$PURE_PURSUIT_instance = new WebviewSimulationController$LateralControlModel('PURE_PURSUIT', 0);
-    WebviewSimulationController$LateralControlModel$STANLEY_instance = new WebviewSimulationController$LateralControlModel('STANLEY', 1);
-    WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_instance = new WebviewSimulationController$LateralControlModel('CURVATURE_FOLLOWING', 2);
+    LateralControlModel$PURE_PURSUIT_instance = new LateralControlModel('PURE_PURSUIT', 0);
+    LateralControlModel$STANLEY_instance = new LateralControlModel('STANLEY', 1);
+    LateralControlModel$CURVATURE_FOLLOWING_instance = new LateralControlModel('CURVATURE_FOLLOWING', 2);
   }
-  var WebviewSimulationController$LateralControlModel$PURE_PURSUIT_instance;
-  function WebviewSimulationController$LateralControlModel$PURE_PURSUIT_getInstance() {
-    WebviewSimulationController$LateralControlModel_initFields();
-    return WebviewSimulationController$LateralControlModel$PURE_PURSUIT_instance;
+  var LateralControlModel$PURE_PURSUIT_instance;
+  function LateralControlModel$PURE_PURSUIT_getInstance() {
+    LateralControlModel_initFields();
+    return LateralControlModel$PURE_PURSUIT_instance;
   }
-  var WebviewSimulationController$LateralControlModel$STANLEY_instance;
-  function WebviewSimulationController$LateralControlModel$STANLEY_getInstance() {
-    WebviewSimulationController$LateralControlModel_initFields();
-    return WebviewSimulationController$LateralControlModel$STANLEY_instance;
+  var LateralControlModel$STANLEY_instance;
+  function LateralControlModel$STANLEY_getInstance() {
+    LateralControlModel_initFields();
+    return LateralControlModel$STANLEY_instance;
   }
-  var WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_instance;
-  function WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_getInstance() {
-    WebviewSimulationController$LateralControlModel_initFields();
-    return WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_instance;
+  var LateralControlModel$CURVATURE_FOLLOWING_instance;
+  function LateralControlModel$CURVATURE_FOLLOWING_getInstance() {
+    LateralControlModel_initFields();
+    return LateralControlModel$CURVATURE_FOLLOWING_instance;
   }
-  WebviewSimulationController$LateralControlModel.$metadata$ = {kind: Kind_CLASS, simpleName: 'LateralControlModel', interfaces: [Enum]};
-  function WebviewSimulationController$LateralControlModel$values() {
-    return [WebviewSimulationController$LateralControlModel$PURE_PURSUIT_getInstance(), WebviewSimulationController$LateralControlModel$STANLEY_getInstance(), WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_getInstance()];
+  LateralControlModel.$metadata$ = {kind: Kind_CLASS, simpleName: 'LateralControlModel', interfaces: [Enum]};
+  function LateralControlModel$values() {
+    return [LateralControlModel$PURE_PURSUIT_getInstance(), LateralControlModel$STANLEY_getInstance(), LateralControlModel$CURVATURE_FOLLOWING_getInstance()];
   }
-  WebviewSimulationController$LateralControlModel.values = WebviewSimulationController$LateralControlModel$values;
-  function WebviewSimulationController$LateralControlModel$valueOf(name) {
+  LateralControlModel.values = LateralControlModel$values;
+  function LateralControlModel$valueOf(name) {
     switch (name) {
       case 'PURE_PURSUIT':
-        return WebviewSimulationController$LateralControlModel$PURE_PURSUIT_getInstance();
+        return LateralControlModel$PURE_PURSUIT_getInstance();
       case 'STANLEY':
-        return WebviewSimulationController$LateralControlModel$STANLEY_getInstance();
+        return LateralControlModel$STANLEY_getInstance();
       case 'CURVATURE_FOLLOWING':
-        return WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_getInstance();
-      default:throwISE('No enum constant fr.ciadlab.sim.infrastructure.viewjs.controllers.WebviewSimulationController.LateralControlModel.' + name);
+        return LateralControlModel$CURVATURE_FOLLOWING_getInstance();
+      default:throwISE('No enum constant fr.ciadlab.sim.infrastructure.viewjs.controllers.LateralControlModel.' + name);
     }
   }
-  WebviewSimulationController$LateralControlModel.valueOf_61zpoe$ = WebviewSimulationController$LateralControlModel$valueOf;
+  LateralControlModel.valueOf_61zpoe$ = LateralControlModel$valueOf;
+  function WebviewSimulationController() {
+    this.dragging_0 = false;
+    this.dragOrigin_0 = new Pair(0.0, 0.0);
+    this.currentScaleFactor_0 = 1.0;
+    this.lateralControlModel = LateralControlModel$CURVATURE_FOLLOWING_getInstance();
+  }
   function WebviewSimulationController$load$lambda(this$WebviewSimulationController, closure$canvas) {
     return function (it) {
       var scaleFactor = it.deltaY < 0.0 ? 1.1 : 0.9;
@@ -8140,12 +8160,20 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function WebviewSimulationController$load$lambda_5(this$WebviewSimulationController, closure$vehicle, closure$driverBehavioralState) {
     return function () {
       var tmp$;
-      if (equals(this$WebviewSimulationController.lateralControlModel, WebviewSimulationController$LateralControlModel$PURE_PURSUIT_getInstance()))
-        tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
-          return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
-        })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
-      else
-        tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+      switch (this$WebviewSimulationController.lateralControlModel.name) {
+        case 'PURE_PURSUIT':
+          tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
+            return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
+          })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+          break;
+        case 'STANLEY':
+          tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState, void 0, getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
+            return ReachGoalBehavior.Companion.stanleyLateralControl_hh9uo6$(driverBehavioralState, vehicle);
+          })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+          break;
+        default:tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+          break;
+      }
       closure$vehicle.v = tmp$;
       return Unit;
     };
@@ -8579,7 +8607,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var carImage;
   function carView($receiver, car) {
     if (carImage == null) {
-      carImage = image($receiver, 'src/main/resources/fr/ciadlab/sim/infrastructure/viewjs/car/car_up_right.png');
+      carImage = image($receiver, 'assets/js/sim-view-js/fr/ciadlab/sim/infrastructure/viewjs/car/car_up_right.png');
     }var safeCarImage = carImage;
     if (safeCarImage != null) {
       $receiver.save();
@@ -8614,11 +8642,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Object.defineProperty(Color, 'TRANSPARENT', {get: Color$TRANSPARENT_getInstance});
   Object.defineProperty(Color, 'Companion', {get: Color$Companion_getInstance});
   package$canvas.Color = Color;
-  Object.defineProperty(WebviewSimulationController$LateralControlModel, 'PURE_PURSUIT', {get: WebviewSimulationController$LateralControlModel$PURE_PURSUIT_getInstance});
-  Object.defineProperty(WebviewSimulationController$LateralControlModel, 'STANLEY', {get: WebviewSimulationController$LateralControlModel$STANLEY_getInstance});
-  Object.defineProperty(WebviewSimulationController$LateralControlModel, 'CURVATURE_FOLLOWING', {get: WebviewSimulationController$LateralControlModel$CURVATURE_FOLLOWING_getInstance});
-  WebviewSimulationController.LateralControlModel = WebviewSimulationController$LateralControlModel;
+  Object.defineProperty(LateralControlModel, 'PURE_PURSUIT', {get: LateralControlModel$PURE_PURSUIT_getInstance});
+  Object.defineProperty(LateralControlModel, 'STANLEY', {get: LateralControlModel$STANLEY_getInstance});
+  Object.defineProperty(LateralControlModel, 'CURVATURE_FOLLOWING', {get: LateralControlModel$CURVATURE_FOLLOWING_getInstance});
   var package$controllers = package$viewjs.controllers || (package$viewjs.controllers = {});
+  package$controllers.LateralControlModel = LateralControlModel;
   package$controllers.WebviewSimulationController = WebviewSimulationController;
   package$viewjs.main = main;
   package$viewjs.loadSimViewJs = loadSimViewJs;

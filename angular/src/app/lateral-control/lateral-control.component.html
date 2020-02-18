@@ -9,7 +9,7 @@
   <mat-card-content>
     <mat-form-field>
       <mat-label>Control Strategy</mat-label>
-      <mat-select [(ngModel)]="selectedStrategy">
+      <mat-select [(ngModel)]="selectedStrategy" (selectionChange)="updateStrategy()">
         <mat-option *ngFor="let strategy of strategies" [value]="strategy.value">{{strategy.viewValue}}</mat-option>
       </mat-select>
     </mat-form-field>

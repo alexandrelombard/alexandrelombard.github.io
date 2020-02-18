@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
 
-// import { simviewjs } from 'sim-view-js';
-
-// import * as simViewApp from 'src/assets/js/sim-view-js/sim-view-js.js'
 declare const simViewApp: any;
-//declare const simViewApp.fr.ciadlab.sim.infrastructure.viewjs.controllers.WebviewSimulationController(canvasId: string): any;
 
 export interface LateralControlStrategy {
   value: string,
@@ -31,14 +27,36 @@ export class LateralControlComponent implements OnInit {
     { value: 'curvature-following', viewValue: 'Curvature Following' }
   ];
 
+  private simulationWebViewPackage = simViewApp.fr.ciadlab.sim.infrastructure.viewjs;
+  private simulationWebviewController;
+
   ngOnInit(): void {
     this.selectedStrategy = this.strategies[0].value;
 
     let canvasElementId = (<HTMLCanvasElement>this.canvasElement.nativeElement).id;
 
-    let simulationWebviewController =
-      new simViewApp.fr.ciadlab.sim.infrastructure.viewjs.controllers.WebviewSimulationController();
-    simulationWebviewController.load(canvasElementId);
+    this.simulationWebviewController =
+      new this.simulationWebViewPackage.controllers.WebviewSimulationController();
+    this.simulationWebviewController.load(canvasElementId);
+  }
+
+  updateStrategy(): void {
+    console.log('Strategy update: ' + this.selectedStrategy);
+
+    switch (this.selectedStrategy) {
+      case 'pure-pursuit':
+        this.simulationWebviewController.lateralControlModel =
+          this.simulationWebViewPackage.controllers.LateralControlModel.PURE_PURSUIT;
+        break;
+      case 'stanley':
+        this.simulationWebviewController.lateralControlModel =
+          this.simulationWebViewPackage.controllers.LateralControlModel.STANLEY;
+        break;
+      default:
+        this.simulationWebviewController.lateralControlModel =
+          this.simulationWebViewPackage.controllers.LateralControlModel.CURVATURE_FOLLOWING;
+    }
+
   }
 
 }
