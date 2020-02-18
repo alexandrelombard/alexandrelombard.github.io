@@ -3,8 +3,9 @@ import { ViewChild, ElementRef } from '@angular/core';
 
 // import { simviewjs } from 'sim-view-js';
 
-// import * as simviewjs from 'src/assets/js/sim-view-js/sim-view-js.js'
-declare function loadSimViewJs(args: Array<string>): any;
+// import * as simViewApp from 'src/assets/js/sim-view-js/sim-view-js.js'
+declare const simViewApp: any;
+//declare const simViewApp.fr.ciadlab.sim.infrastructure.viewjs.controllers.WebviewSimulationController(canvasId: string): any;
 
 export interface LateralControlStrategy {
   value: string,
@@ -35,8 +36,9 @@ export class LateralControlComponent implements OnInit {
 
     let canvasElementId = (<HTMLCanvasElement>this.canvasElement.nativeElement).id;
 
-
-    loadSimViewJs([canvasElementId])
+    let simulationWebviewController =
+      new simViewApp.fr.ciadlab.sim.infrastructure.viewjs.controllers.WebviewSimulationController();
+    simulationWebviewController.load(canvasElementId);
   }
 
 }
