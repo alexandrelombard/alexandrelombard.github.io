@@ -16,5 +16,7 @@
 
   </mat-card-content>
 
-  <canvas #canvasElement id="sim-view-js-canvas" width="800" height="400"></canvas>
+  <div #sizer style="width: 100%"></div>
+
+  <canvas #canvasElement id="sim-view-js-canvas" [width]="sizer.offsetWidth" height="400"></canvas>
 </mat-card>

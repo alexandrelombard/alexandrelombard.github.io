@@ -38,6 +38,8 @@ export class LateralControlComponent implements OnInit {
     this.simulationWebviewController =
       new this.simulationWebViewPackage.controllers.WebviewSimulationController();
     this.simulationWebviewController.load(canvasElementId);
+    this.simulationWebviewController.lateralControlModel =
+      this.simulationWebViewPackage.controllers.LateralControlModel.PURE_PURSUIT;
   }
 
   updateStrategy(): void {
