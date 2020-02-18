@@ -7702,6 +7702,89 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var tmp$;
     return Kotlin.isType(tmp$ = $receiver.getContext('2d'), CanvasRenderingContext2D) ? tmp$ : throwCCE();
   }
+  function Line(lineWidth, strokeStyle, lineDash, startX, startY, endX, endY) {
+    if (lineWidth === void 0)
+      lineWidth = 1.0;
+    if (strokeStyle === void 0)
+      strokeStyle = Color$BLACK_getInstance();
+    if (lineDash === void 0) {
+      lineDash = emptyList();
+    }if (startX === void 0)
+      startX = 0.0;
+    if (startY === void 0)
+      startY = 0.0;
+    if (endX === void 0)
+      endX = 0.0;
+    if (endY === void 0)
+      endY = 0.0;
+    this.lineWidth = lineWidth;
+    this.strokeStyle = strokeStyle;
+    this.lineDash = lineDash;
+    this.startX = startX;
+    this.startY = startY;
+    this.endX = endX;
+    this.endY = endY;
+  }
+  Line.$metadata$ = {kind: Kind_CLASS, simpleName: 'Line', interfaces: []};
+  Line.prototype.component1 = function () {
+    return this.lineWidth;
+  };
+  Line.prototype.component2 = function () {
+    return this.strokeStyle;
+  };
+  Line.prototype.component3 = function () {
+    return this.lineDash;
+  };
+  Line.prototype.component4 = function () {
+    return this.startX;
+  };
+  Line.prototype.component5 = function () {
+    return this.startY;
+  };
+  Line.prototype.component6 = function () {
+    return this.endX;
+  };
+  Line.prototype.component7 = function () {
+    return this.endY;
+  };
+  Line.prototype.copy_ethqze$ = function (lineWidth, strokeStyle, lineDash, startX, startY, endX, endY) {
+    return new Line(lineWidth === void 0 ? this.lineWidth : lineWidth, strokeStyle === void 0 ? this.strokeStyle : strokeStyle, lineDash === void 0 ? this.lineDash : lineDash, startX === void 0 ? this.startX : startX, startY === void 0 ? this.startY : startY, endX === void 0 ? this.endX : endX, endY === void 0 ? this.endY : endY);
+  };
+  Line.prototype.toString = function () {
+    return 'Line(lineWidth=' + Kotlin.toString(this.lineWidth) + (', strokeStyle=' + Kotlin.toString(this.strokeStyle)) + (', lineDash=' + Kotlin.toString(this.lineDash)) + (', startX=' + Kotlin.toString(this.startX)) + (', startY=' + Kotlin.toString(this.startY)) + (', endX=' + Kotlin.toString(this.endX)) + (', endY=' + Kotlin.toString(this.endY)) + ')';
+  };
+  Line.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.lineWidth) | 0;
+    result = result * 31 + Kotlin.hashCode(this.strokeStyle) | 0;
+    result = result * 31 + Kotlin.hashCode(this.lineDash) | 0;
+    result = result * 31 + Kotlin.hashCode(this.startX) | 0;
+    result = result * 31 + Kotlin.hashCode(this.startY) | 0;
+    result = result * 31 + Kotlin.hashCode(this.endX) | 0;
+    result = result * 31 + Kotlin.hashCode(this.endY) | 0;
+    return result;
+  };
+  Line.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.lineWidth, other.lineWidth) && Kotlin.equals(this.strokeStyle, other.strokeStyle) && Kotlin.equals(this.lineDash, other.lineDash) && Kotlin.equals(this.startX, other.startX) && Kotlin.equals(this.startY, other.startY) && Kotlin.equals(this.endX, other.endX) && Kotlin.equals(this.endY, other.endY)))));
+  };
+  function line$lambda($receiver) {
+    return Unit;
+  }
+  function line($receiver, op) {
+    if (op === void 0)
+      op = line$lambda;
+    var line = new Line();
+    op(line);
+    $receiver.save();
+    $receiver.lineWidth = line.lineWidth;
+    $receiver.strokeStyle = line.strokeStyle.toString();
+    $receiver.setLineDash(copyToArray(line.lineDash));
+    $receiver.beginPath();
+    $receiver.moveTo(line.startX, line.startY);
+    $receiver.lineTo(line.endX, line.endY);
+    $receiver.stroke();
+    $receiver.restore();
+  }
   function Polyline(lineWidth, strokeStyle, lineDash) {
     if (lineWidth === void 0)
       lineWidth = 1.0;
@@ -7956,6 +8039,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Color$BLACK_instance = new Color('BLACK', 4, 'rgb(0, 0, 0)');
     Color$MAGENTA_instance = new Color('MAGENTA', 5, 'rgb(255,0,255)');
     Color$TRANSPARENT_instance = new Color('TRANSPARENT', 6, 'rgba(0, 0, 0, 0)');
+    Color$RED_instance = new Color('RED', 7, 'rgb(255,0,0)');
     Color$Companion_getInstance();
   }
   var Color$GRAY_instance;
@@ -7993,6 +8077,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Color_initFields();
     return Color$TRANSPARENT_instance;
   }
+  var Color$RED_instance;
+  function Color$RED_getInstance() {
+    Color_initFields();
+    return Color$RED_instance;
+  }
   Color.prototype.toString = function () {
     return this.style_zeu60i$_0;
   };
@@ -8015,7 +8104,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }
   Color.$metadata$ = {kind: Kind_CLASS, simpleName: 'Color', interfaces: [Enum]};
   function Color$values() {
-    return [Color$GRAY_getInstance(), Color$DARKGRAY_getInstance(), Color$YELLOW_getInstance(), Color$WHITE_getInstance(), Color$BLACK_getInstance(), Color$MAGENTA_getInstance(), Color$TRANSPARENT_getInstance()];
+    return [Color$GRAY_getInstance(), Color$DARKGRAY_getInstance(), Color$YELLOW_getInstance(), Color$WHITE_getInstance(), Color$BLACK_getInstance(), Color$MAGENTA_getInstance(), Color$TRANSPARENT_getInstance(), Color$RED_getInstance()];
   }
   Color.values = Color$values;
   function Color$valueOf(name) {
@@ -8034,6 +8123,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return Color$MAGENTA_getInstance();
       case 'TRANSPARENT':
         return Color$TRANSPARENT_getInstance();
+      case 'RED':
+        return Color$RED_getInstance();
       default:throwISE('No enum constant fr.ciadlab.sim.infrastructure.viewjs.canvas.Color.' + name);
     }
   }
@@ -8149,10 +8240,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
     return Unit;
   }
+  function WebviewSimulationController$load$lambda$lambda_1(closure$vehicle) {
+    return function ($receiver) {
+      $receiver.startX = closure$vehicle.v.position.x;
+      $receiver.startY = closure$vehicle.v.position.y;
+      $receiver.endX = closure$vehicle.v.position.x + closure$vehicle.v.direction.x * 10.0;
+      $receiver.endY = closure$vehicle.v.position.y + closure$vehicle.v.direction.y * 10.0;
+      $receiver.strokeStyle = Color$RED_getInstance();
+      return Unit;
+    };
+  }
   function WebviewSimulationController$load$lambda_4(closure$context, closure$canvas, closure$eightShapedRoadNetworkModel, closure$vehicle) {
     return function () {
       clear(closure$context, closure$canvas);
       roadNetworkView(closure$eightShapedRoadNetworkModel, closure$canvas, WebviewSimulationController$load$lambda$lambda_0);
+      line(closure$context, WebviewSimulationController$load$lambda$lambda_1(closure$vehicle));
       carView(closure$context, closure$vehicle.v);
       return Unit;
     };
@@ -8189,6 +8291,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     canvas.onmousedown = WebviewSimulationController$load$lambda_0(drag, previousX, previousY);
     canvas.onmouseup = WebviewSimulationController$load$lambda_1(drag);
     canvas.onmousemove = WebviewSimulationController$load$lambda_2(drag, previousX, previousY, canvas);
+    context2D(canvas).translate((canvas.width - 200.0) / 2.0, (canvas.height - 200.0) / 2.0);
+    context2D(canvas).scale(2.5, 2.5);
     var eightShapedRoadNetworkModel = roadNetwork(WebviewSimulationController$load$lambda_3);
     var driverBehavioralState = new DriverBehavioralState(eightShapedRoadNetworkModel.roads.get_za3lpa$(0), 0, unit(50.0, physics.Units.KilometersPerHour), eightShapedRoadNetworkModel.roads.get_za3lpa$(0).end());
     var vehicle = {v: new Vehicle(new Vector2D(100.0, 100.0), new Vector2D(unit(50.0, physics.Units.KilometersPerHour), 0.0), 0.0, new Vector2D(1.0, 0.0), 0.0, 3.5, 4.0)};
@@ -8625,6 +8729,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var package$viewjs = package$infrastructure.viewjs || (package$infrastructure.viewjs = {});
   var package$canvas = package$viewjs.canvas || (package$viewjs.canvas = {});
   package$canvas.context2D_ng27xv$ = context2D;
+  package$canvas.Line = Line;
+  package$canvas.line_5lb5hc$ = line;
   package$canvas.Polyline = Polyline;
   package$canvas.polyline_af7h0z$ = polyline;
   package$canvas.Polygon = Polygon;
@@ -8640,6 +8746,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Object.defineProperty(Color, 'BLACK', {get: Color$BLACK_getInstance});
   Object.defineProperty(Color, 'MAGENTA', {get: Color$MAGENTA_getInstance});
   Object.defineProperty(Color, 'TRANSPARENT', {get: Color$TRANSPARENT_getInstance});
+  Object.defineProperty(Color, 'RED', {get: Color$RED_getInstance});
   Object.defineProperty(Color, 'Companion', {get: Color$Companion_getInstance});
   package$canvas.Color = Color;
   Object.defineProperty(LateralControlModel, 'PURE_PURSUIT', {get: LateralControlModel$PURE_PURSUIT_getInstance});
