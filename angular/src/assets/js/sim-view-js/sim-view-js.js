@@ -8077,6 +8077,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var ReachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.ReachGoalBehavior;
   var getCallableRef = Kotlin.getCallableRef;
   var reachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.reachGoalBehavior_pdvrc7$;
+  var DriverBehavioralAction = $module$car_behavior.fr.ciadlab.sim.car.behavior.DriverBehavioralAction;
   var Pair = Kotlin.kotlin.Pair;
   var ensureNotNull = Kotlin.ensureNotNull;
   var IntersectionBuilder$ConnectedSide = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.IntersectionBuilder.ConnectedSide;
@@ -8575,6 +8576,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.lateralControlModel = LateralControlModel$CURVATURE_FOLLOWING_getInstance();
     this.simulatedPositionError = false;
     this.simulatedDirectionError = false;
+    this.simulatedLatency = false;
+    this.simulatedLatencyDelay = unit(300.0, physics.Units.Milliseconds);
+    this.lastCommand_0 = new DriverBehavioralAction(0.0, 0.0);
+    this.lastCommandTime_0 = 0.0;
   }
   function WebviewSimulationController$load$lambda(this$WebviewSimulationController, closure$canvas) {
     return function (it) {
@@ -8693,7 +8698,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           break;
       }
       var driverAction = tmp$;
-      closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(driverAction.targetAcceleration, driverAction.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
+      if (!this$WebviewSimulationController.simulatedLatency) {
+        closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(driverAction.targetAcceleration, driverAction.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
+        this$WebviewSimulationController.lastCommand_0 = driverAction;
+        this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * unit(10.0, physics.Units.Milliseconds);
+      } else {
+        if (this$WebviewSimulationController.lastCommandTime_0 + closure$stepCount.v * unit(10.0, physics.Units.Milliseconds) > this$WebviewSimulationController.simulatedLatencyDelay) {
+          closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$WebviewSimulationController.lastCommand_0.targetAcceleration, this$WebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
+          this$WebviewSimulationController.lastCommand_0 = driverAction;
+          this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * unit(10.0, physics.Units.Milliseconds);
+        }}
       return tmp$_0 = closure$stepCount.v, closure$stepCount.v = tmp$_0 + 1 | 0, tmp$_0;
     };
   }
