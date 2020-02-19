@@ -7678,6 +7678,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var DriverBehavioralState = $module$car_behavior.fr.ciadlab.sim.car.behavior.DriverBehavioralState;
   var Vector2D = $module$math.fr.ciadlab.sim.math.geometry.Vector2D;
   var Vehicle = $module$car_model.fr.ciadlab.sim.vehicle.Vehicle;
+  var offset = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.offset_2lvzg3$;
+  var Vector2D_init = $module$math.fr.ciadlab.sim.math.geometry.Vector2D_init_9weutc$;
+  var toVector3D = $module$math.fr.ciadlab.sim.math.geometry.toVector3D_ri86yn$;
+  var project = $module$math.fr.ciadlab.sim.math.geometry.project_lqci66$;
   var ReachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.ReachGoalBehavior;
   var getCallableRef = Kotlin.getCallableRef;
   var reachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.reachGoalBehavior_pdvrc7$;
@@ -8174,9 +8178,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }
   LateralControlModel.valueOf_61zpoe$ = LateralControlModel$valueOf;
   function WebviewSimulationController() {
-    this.dragging_0 = false;
-    this.dragOrigin_0 = new Pair(0.0, 0.0);
     this.currentScaleFactor_0 = 1.0;
+    this.onStatsReceived = null;
     this.lateralControlModel = LateralControlModel$CURVATURE_FOLLOWING_getInstance();
   }
   function WebviewSimulationController$load$lambda(this$WebviewSimulationController, closure$canvas) {
@@ -8259,10 +8262,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return Unit;
     };
   }
-  function WebviewSimulationController$load$lambda_5(this$WebviewSimulationController, closure$vehicle, closure$driverBehavioralState) {
+  function WebviewSimulationController$load$lambda_5(this$WebviewSimulationController, closure$driverBehavioralState, closure$vehicle, closure$stepCount) {
     return function () {
-      var tmp$;
-      switch (this$WebviewSimulationController.lateralControlModel.name) {
+      var tmp$, tmp$_0;
+      var statsHandler = this$WebviewSimulationController.onStatsReceived;
+      if (statsHandler != null) {
+        var laneWidth = 3.5;
+        var laneOffset = closure$driverBehavioralState.currentRoad.laneOffset_za3lpa$(closure$driverBehavioralState.currentLaneIndex);
+        var lane = offset(closure$driverBehavioralState.currentRoad.points, laneOffset * laneWidth);
+        var frontAxlePosition = toVector3D(closure$vehicle.v.position.plus_8a09bi$(Vector2D_init(closure$vehicle.v.wheelBase / 2.0, closure$vehicle.v.direction)));
+        var projectionData = project(lane, frontAxlePosition);
+        var distance = projectionData.distance;
+        var polylineSegment = projectionData.segmentEnd.minus_8a09cd$(projectionData.segmentBegin);
+        var side = projectionData.segmentEnd.minus_8a09cd$(projectionData.segmentBegin).xy.angle_8a09bi$(frontAxlePosition.minus_8a09cd$(projectionData.segmentBegin).xy);
+        var left = side > 0.0;
+        var angleError = polylineSegment.xy.angle_8a09bi$(closure$vehicle.v.direction);
+        var lateralError = distance * (left ? 1 : -1);
+        statsHandler(closure$stepCount.v * 0.01, LateralControlModel$PURE_PURSUIT_getInstance().name, lateralError, angleError);
+      }switch (this$WebviewSimulationController.lateralControlModel.name) {
         case 'PURE_PURSUIT':
           tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
             return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
@@ -8277,7 +8294,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           break;
       }
       closure$vehicle.v = tmp$;
-      return Unit;
+      return tmp$_0 = closure$stepCount.v, closure$stepCount.v = tmp$_0 + 1 | 0, tmp$_0;
     };
   }
   WebviewSimulationController.prototype.load = function (canvasId) {
@@ -8297,7 +8314,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var driverBehavioralState = new DriverBehavioralState(eightShapedRoadNetworkModel.roads.get_za3lpa$(0), 0, unit(50.0, physics.Units.KilometersPerHour), eightShapedRoadNetworkModel.roads.get_za3lpa$(0).end());
     var vehicle = {v: new Vehicle(new Vector2D(100.0, 100.0), new Vector2D(unit(50.0, physics.Units.KilometersPerHour), 0.0), 0.0, new Vector2D(1.0, 0.0), 0.0, 3.5, 4.0)};
     window.setInterval(WebviewSimulationController$load$lambda_4(context, canvas, eightShapedRoadNetworkModel, vehicle), 20);
-    window.setInterval(WebviewSimulationController$load$lambda_5(this, vehicle, driverBehavioralState), 10);
+    var stepCount = {v: 0};
+    window.setInterval(WebviewSimulationController$load$lambda_5(this, driverBehavioralState, vehicle, stepCount), 10);
   };
   WebviewSimulationController.$metadata$ = {kind: Kind_CLASS, simpleName: 'WebviewSimulationController', interfaces: []};
   var dragging;
@@ -8628,7 +8646,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     polyline(context, toDoubleArray(destination).slice(), road$lambda(road, $receiver));
     var middleLineOffset = $receiver.laneWidth * ((road.backwardLanesCount - road.forwardLanesCount | 0) + (road.totalLanesCount % 2 !== 0 ? 0.5 : 0.0));
     if (!road.oneWay) {
-      var $receiver_1 = offset(road.points, middleLineOffset);
+      var $receiver_1 = offset_0(road.points, middleLineOffset);
       var destination_0 = ArrayList_init_0();
       var tmp$_2;
       tmp$_2 = $receiver_1.iterator();
@@ -8642,7 +8660,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       tmp$ = road.backwardLanesCount;
       for (var i = 1; i < tmp$; i++) {
         var laneOffset = -$receiver.laneWidth * i + middleLineOffset;
-        var $receiver_2 = offset(road.points, laneOffset);
+        var $receiver_2 = offset_0(road.points, laneOffset);
         var destination_1 = ArrayList_init_0();
         var tmp$_3;
         tmp$_3 = $receiver_2.iterator();
@@ -8656,7 +8674,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }tmp$_0 = road.forwardLanesCount;
     for (var i_0 = 1; i_0 < tmp$_0; i_0++) {
       var laneOffset_0 = $receiver.laneWidth * i_0 + middleLineOffset;
-      var $receiver_3 = offset(road.points, laneOffset_0);
+      var $receiver_3 = offset_0(road.points, laneOffset_0);
       var destination_2 = ArrayList_init_0();
       var tmp$_4;
       tmp$_4 = $receiver_3.iterator();
@@ -8691,7 +8709,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function width($receiver, road) {
     return $receiver.laneWidth * road.totalLanesCount;
   }
-  function offset(points, offset) {
+  function offset_0(points, offset) {
     var tmp$;
     var result = ArrayList_init_0();
     var beginDirection = points.get_za3lpa$(1).minus_8a09cd$(points.get_za3lpa$(0)).normalize();
@@ -8709,6 +8727,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return result;
   }
   var carImage;
+  var imageBasePath;
   function carView($receiver, car) {
     if (carImage == null) {
       carImage = image($receiver, 'assets/js/sim-view-js/fr/ciadlab/sim/infrastructure/viewjs/car/car_up_right.png');
@@ -8773,6 +8792,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   dragOrigin = new Pair(0.0, 0.0);
   currentScaleFactor = 1.0;
   carImage = null;
+  imageBasePath = 'assets/js/sim-view-js';
   main();
   return _;
 }(module.exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js"), __webpack_require__(/*! math */ "./kotlin-dce/math.js"), __webpack_require__(/*! infrastructure-model */ "./kotlin-dce/infrastructure-model.js"), __webpack_require__(/*! physics */ "./kotlin-dce/physics.js"), __webpack_require__(/*! car-behavior */ "./kotlin-dce/car-behavior.js"), __webpack_require__(/*! car-model */ "./kotlin-dce/car-model.js")));
