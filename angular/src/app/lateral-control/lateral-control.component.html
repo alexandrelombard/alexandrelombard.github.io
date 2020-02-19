@@ -24,7 +24,10 @@
       Simulated direction error
     </mat-slide-toggle>
     &nbsp;
-<!--    <mat-slide-toggle color="primary" [(ngModel)]="simulatedLatency" (change)="updateErrors()">Simulated latency</mat-slide-toggle>-->
+    <mat-slide-toggle color="primary" [(ngModel)]="simulatedLatency" (change)="updateErrors()"
+                      matTooltip="Commands will be applied with a delay of 300ms" matTooltipPosition="below">
+      Simulated latency
+    </mat-slide-toggle>
 
   </mat-card-content>
 

@@ -144,5 +144,6 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
 
     this.simulationWebviewController.simulatedPositionError = this.simulatedDirectionError;
     this.simulationWebviewController.simulatedDirectionError = this.simulatedDirectionError;
+    this.simulationWebviewController.simulatedLatency = this.simulatedLatency;
   }
 }
