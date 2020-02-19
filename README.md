@@ -5,5 +5,7 @@ build and deploy the Angular website to https://alexandrelombard.github.io
 
 ### Deploy command
 
+In _angular_ directory, run:
+
     ng deploy --branch=master
 
