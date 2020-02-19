@@ -13,12 +13,24 @@
         <mat-option *ngFor="let strategy of strategies" [value]="strategy.value">{{strategy.viewValue}}</mat-option>
       </mat-select>
     </mat-form-field>
+    &nbsp;
+    <mat-slide-toggle color="primary" [(ngModel)]="simulatedPositionError" (change)="updateErrors()"
+      matTooltip="The perceived position will be within a 0.1m radius of the real position" matTooltipPosition="below">
+      Simulated position error
+    </mat-slide-toggle>
+    &nbsp;
+    <mat-slide-toggle color="primary" [(ngModel)]="simulatedDirectionError" (change)="updateErrors()"
+                      matTooltip="The perceived direction will be rotated by a random angle of the range [-0.1, 0.1]" matTooltipPosition="below">
+      Simulated direction error
+    </mat-slide-toggle>
+    &nbsp;
+<!--    <mat-slide-toggle color="primary" [(ngModel)]="simulatedLatency" (change)="updateErrors()">Simulated latency</mat-slide-toggle>-->
 
   </mat-card-content>
 
   <div #sizer style="width: 100%"></div>
 
-  <canvas #canvasElement id="sim-view-js-canvas" [width]="sizer.offsetWidth" height="400"></canvas>
+  <canvas #canvasElement id="sim-view-js-canvas" [width]="sizer.offsetWidth" height="350"></canvas>
 
-  <canvas #chartElement id="chart" height="400" [width]="sizer.offsetWidth" style="height: 400px;"></canvas>
+  <canvas #chartElement id="chart" height="350" [width]="sizer.offsetWidth" style="height: 350px;"></canvas>
 </mat-card>

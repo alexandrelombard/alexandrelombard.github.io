@@ -15,9 +15,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSelectModule } from "@angular/material/select";
 import { FormsModule } from '@angular/forms';
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { NavComponent } from './nav/nav.component';
 import { LateralControlComponent } from './lateral-control/lateral-control.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { LateralControlComponent } from './lateral-control/lateral-control.compo
     MatRadioModule,
     MatSelectModule,
     FormsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

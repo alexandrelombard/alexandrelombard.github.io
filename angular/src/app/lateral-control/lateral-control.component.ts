@@ -23,6 +23,9 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
   @ViewChild('chartElement', {static: true}) chartElement: ElementRef;
 
   selectedStrategy: string;
+  simulatedPositionError: boolean = false;
+  simulatedDirectionError: boolean = false;
+  simulatedLatency: boolean = false;
 
   strategies: LateralControlStrategy[] = [
     {value: 'pure-pursuit', viewValue: 'Pure-Pursuit'},
@@ -78,6 +81,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
             label: 'Lateral Error',
             backgroundColor: "rgba(0.0, 0.0, 0.0, 0.0)",
             borderColor: "rgb(255, 99, 132)",
+            lineTension: 0.0,
             showLine: true,
             data: []
           },
@@ -85,6 +89,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
             label: 'Angle Error',
             backgroundColor: "rgba(0.0, 0.0, 0.0, 0.0)",
             borderColor: "rgb(128, 99, 255)",
+            lineTension: 0.0,
             showLine: true,
             data: []
           }
@@ -131,4 +136,13 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
 
   }
 
+  /**
+   * Update the simulated errors according to the current state of errors
+   */
+  updateErrors(): void {
+    console.log('Errors update: ' + this.simulatedPositionError + ", " + this.simulatedDirectionError);
+
+    this.simulationWebviewController.simulatedPositionError = this.simulatedDirectionError;
+    this.simulationWebviewController.simulatedDirectionError = this.simulatedDirectionError;
+  }
 }

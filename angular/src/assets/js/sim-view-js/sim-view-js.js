@@ -310,6 +310,32 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var Vector2D_init = $module$math.fr.ciadlab.sim.math.geometry.Vector2D_init_9weutc$;
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var getCallableRef = Kotlin.getCallableRef;
+  function DriverBehavioralAction(targetAcceleration, targetWheelAngle) {
+    this.targetAcceleration = targetAcceleration;
+    this.targetWheelAngle = targetWheelAngle;
+  }
+  DriverBehavioralAction.$metadata$ = {kind: Kind_CLASS, simpleName: 'DriverBehavioralAction', interfaces: []};
+  DriverBehavioralAction.prototype.component1 = function () {
+    return this.targetAcceleration;
+  };
+  DriverBehavioralAction.prototype.component2 = function () {
+    return this.targetWheelAngle;
+  };
+  DriverBehavioralAction.prototype.copy_lu1900$ = function (targetAcceleration, targetWheelAngle) {
+    return new DriverBehavioralAction(targetAcceleration === void 0 ? this.targetAcceleration : targetAcceleration, targetWheelAngle === void 0 ? this.targetWheelAngle : targetWheelAngle);
+  };
+  DriverBehavioralAction.prototype.toString = function () {
+    return 'DriverBehavioralAction(targetAcceleration=' + Kotlin.toString(this.targetAcceleration) + (', targetWheelAngle=' + Kotlin.toString(this.targetWheelAngle)) + ')';
+  };
+  DriverBehavioralAction.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.targetAcceleration) | 0;
+    result = result * 31 + Kotlin.hashCode(this.targetWheelAngle) | 0;
+    return result;
+  };
+  DriverBehavioralAction.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.targetAcceleration, other.targetAcceleration) && Kotlin.equals(this.targetWheelAngle, other.targetWheelAngle)))));
+  };
   function DriverBehavioralState(currentRoad, currentLaneIndex, maximumSpeed, goal) {
     this.currentRoad = currentRoad;
     this.currentLaneIndex = currentLaneIndex;
@@ -405,7 +431,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   ReachGoalBehavior.prototype.apply_14dthe$ = function (deltaTime) {
     var targetAcceleration = this.longitudinalControl(this.driverBehavioralState, this.vehicle);
     var targetWheelAngle = this.lateralControl(this.driverBehavioralState, this.vehicle);
-    return this.vehicle.update_yvo9jy$(targetAcceleration, targetWheelAngle, deltaTime);
+    return new DriverBehavioralAction(targetAcceleration, targetWheelAngle);
   };
   function ReachGoalBehavior$Companion() {
     ReachGoalBehavior$Companion_instance = this;
@@ -490,6 +516,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var package$sim = package$ciadlab.sim || (package$ciadlab.sim = {});
   var package$car = package$sim.car || (package$sim.car = {});
   var package$behavior = package$car.behavior || (package$car.behavior = {});
+  package$behavior.DriverBehavioralAction = DriverBehavioralAction;
   package$behavior.DriverBehavioralState = DriverBehavioralState;
   var package$lateral = package$behavior.lateral || (package$behavior.lateral = {});
   package$lateral.lombardLateralControl_3v5prj$ = lombardLateralControl;
@@ -526,6 +553,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var Vector2D = $module$math.fr.ciadlab.sim.math.geometry.Vector2D;
   var lazy = Kotlin.kotlin.lazy_klfg04$;
   var Kind_CLASS = Kotlin.Kind.CLASS;
+  var Random = Kotlin.kotlin.random.Random;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var Math_0 = Math;
   function Vehicle(position, velocity, acceleration, direction, wheelAngle, wheelBase, length, wheelAngleLimit, onUpdate) {
@@ -647,11 +675,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Vehicle.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.position, other.position) && Kotlin.equals(this.velocity, other.velocity) && Kotlin.equals(this.acceleration, other.acceleration) && Kotlin.equals(this.direction, other.direction) && Kotlin.equals(this.wheelAngle, other.wheelAngle) && Kotlin.equals(this.wheelBase, other.wheelBase) && Kotlin.equals(this.length, other.length) && Kotlin.equals(this.wheelAngleLimit, other.wheelAngleLimit) && Kotlin.equals(this.onUpdate, other.onUpdate)))));
   };
+  function withSimulatedPositionError($receiver, errorRadius) {
+    if (errorRadius === void 0)
+      errorRadius = 0.1;
+    var tmp$ = $receiver.position;
+    var x = Random.Default.nextDouble_14dthe$(2 * math.PI);
+    var tmp$_0 = Math_0.cos(x);
+    var x_0 = Random.Default.nextDouble_14dthe$(2 * math.PI);
+    return $receiver.copy_cz5p3k$(tmp$.plus_8a09bi$((new Vector2D(tmp$_0, Math_0.sin(x_0))).times_14dthe$(errorRadius)));
+  }
+  function withSimulationDirectionError($receiver, errorAngleLimit) {
+    if (errorAngleLimit === void 0)
+      errorAngleLimit = 0.1;
+    var erroneousDirection = $receiver.direction.rotate_14dthe$(Random.Default.nextDouble_lu1900$(-errorAngleLimit, errorAngleLimit));
+    return $receiver.copy_cz5p3k$(void 0, Vector2D_init($receiver.velocity.norm, erroneousDirection), void 0, erroneousDirection);
+  }
   var package$fr = _.fr || (_.fr = {});
   var package$ciadlab = package$fr.ciadlab || (package$fr.ciadlab = {});
   var package$sim = package$ciadlab.sim || (package$ciadlab.sim = {});
   var package$vehicle = package$sim.vehicle || (package$sim.vehicle = {});
   package$vehicle.Vehicle = Vehicle;
+  package$vehicle.withSimulatedPositionError_yrgvwq$ = withSimulatedPositionError;
+  package$vehicle.withSimulationDirectionError_yrgvwq$ = withSimulationDirectionError;
   return _;
 }));
 
@@ -1864,7 +1909,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     if (bufInt32[lowIndex] !== 0) {
       lowIndex = 1;
       highIndex = 0;
-    }Kotlin.numberHashCode = function (obj) {
+    }Kotlin.doubleToRawBits = function (value) {
+      bufFloat64[0] = value;
+      return Kotlin.Long.fromBits(bufInt32[lowIndex], bufInt32[highIndex]);
+    };
+    Kotlin.doubleFromBits = function (value) {
+      bufInt32[lowIndex] = value.low_;
+      bufInt32[highIndex] = value.high_;
+      return bufFloat64[0];
+    };
+    Kotlin.numberHashCode = function (obj) {
       if ((obj | 0) === obj) {
         return obj | 0;
       } else {
@@ -2322,6 +2376,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var arrayToString = Kotlin.arrayToString;
     var hashCode = Kotlin.hashCode;
     var Throwable = Error;
+    var toRawBits = Kotlin.doubleToRawBits;
     var kotlin_js_internal_CharCompanionObject = Kotlin.kotlin.js.internal.CharCompanionObject;
     var L_7390468764508069838 = new Kotlin.Long(-1478467534, -1720727600);
     var L8246714829545688274 = new Kotlin.Long(-888910638, 1920087921);
@@ -2429,6 +2484,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     AbstractMap$get_AbstractMap$values$ObjectLiteral.prototype.constructor = AbstractMap$get_AbstractMap$values$ObjectLiteral;
     CoroutineSingletons.prototype = Object.create(Enum.prototype);
     CoroutineSingletons.prototype.constructor = CoroutineSingletons;
+    Random$Default.prototype = Object.create(Random.prototype);
+    Random$Default.prototype.constructor = Random$Default;
+    Random$Companion.prototype = Object.create(Random.prototype);
+    Random$Companion.prototype.constructor = Random$Companion;
+    XorWowRandom.prototype = Object.create(Random.prototype);
+    XorWowRandom.prototype.constructor = XorWowRandom;
     NotImplementedError.prototype = Object.create(Error_0.prototype);
     NotImplementedError.prototype.constructor = NotImplementedError;
     function contains($receiver, element) {
@@ -4827,8 +4888,33 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     function Serializable() {
     }
     Serializable.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Serializable', interfaces: []};
+    function nextDown($receiver) {
+      if (isNaN_0($receiver) || $receiver === kotlin_js_internal_DoubleCompanionObject.NEGATIVE_INFINITY)
+        return $receiver;
+      else if ($receiver === 0.0)
+        return -kotlin_js_internal_DoubleCompanionObject.MIN_VALUE;
+      else {
+        var bits = toRawBits($receiver).add(Kotlin.Long.fromInt($receiver > 0 ? -1 : 1));
+        return Kotlin.doubleFromBits(bits);
+      }
+    }
+    function isNaN_0($receiver) {
+      return $receiver !== $receiver;
+    }
+    function isInfinite($receiver) {
+      return $receiver === kotlin_js_internal_DoubleCompanionObject.POSITIVE_INFINITY || $receiver === kotlin_js_internal_DoubleCompanionObject.NEGATIVE_INFINITY;
+    }
+    function isFinite($receiver) {
+      return !isInfinite($receiver) && !isNaN_0($receiver);
+    }
+    function defaultPlatformRandom() {
+      return Random_0(Math.random() * Math.pow(2, 32) | 0);
+    }
     var INV_2_26;
     var INV_2_53;
+    function doubleFromParts(hi26, low27) {
+      return hi26 * INV_2_26 + low27 * INV_2_53;
+    }
     function get_js($receiver) {
       var tmp$;
       return (Kotlin.isType(tmp$ = $receiver, KClassImpl) ? tmp$ : throwCCE_0()).jClass;
@@ -6323,8 +6409,289 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var RequireKotlinVersionKind$COMPILER_VERSION_instance;
     var RequireKotlinVersionKind$API_VERSION_instance;
     var Delegates_instance = null;
+    function Random() {
+      Random$Default_getInstance();
+    }
+    Random.prototype.nextInt = function () {
+      return this.nextBits_za3lpa$(32);
+    };
+    Random.prototype.nextInt_za3lpa$ = function (until) {
+      return this.nextInt_vux9f0$(0, until);
+    };
+    Random.prototype.nextInt_vux9f0$ = function (from, until) {
+      var tmp$;
+      checkRangeBounds(from, until);
+      var n = until - from | 0;
+      if (n > 0 || n === -2147483648) {
+        if ((n & (-n | 0)) === n) {
+          var bitCount = fastLog2(n);
+          tmp$ = this.nextBits_za3lpa$(bitCount);
+        } else {
+          var v;
+          do {
+            var bits = this.nextInt() >>> 1;
+            v = bits % n;
+          }
+           while ((bits - v + (n - 1) | 0) < 0);
+          tmp$ = v;
+        }
+        var rnd = tmp$;
+        return from + rnd | 0;
+      } else {
+        while (true) {
+          var rnd_0 = this.nextInt();
+          if (from <= rnd_0 && rnd_0 < until)
+            return rnd_0;
+        }
+      }
+    };
+    Random.prototype.nextLong = function () {
+      return Kotlin.Long.fromInt(this.nextInt()).shiftLeft(32).add(Kotlin.Long.fromInt(this.nextInt()));
+    };
+    Random.prototype.nextLong_s8cxhz$ = function (until) {
+      return this.nextLong_3pjtqy$(L0, until);
+    };
+    Random.prototype.nextLong_3pjtqy$ = function (from, until) {
+      var tmp$;
+      checkRangeBounds_0(from, until);
+      var n = until.subtract(from);
+      if (n.toNumber() > 0) {
+        var rnd;
+        if (equals(n.and(n.unaryMinus()), n)) {
+          var nLow = n.toInt();
+          var nHigh = n.shiftRightUnsigned(32).toInt();
+          if (nLow !== 0) {
+            var bitCount = fastLog2(nLow);
+            tmp$ = Kotlin.Long.fromInt(this.nextBits_za3lpa$(bitCount)).and(L4294967295);
+          } else if (nHigh === 1)
+            tmp$ = Kotlin.Long.fromInt(this.nextInt()).and(L4294967295);
+          else {
+            var bitCount_0 = fastLog2(nHigh);
+            tmp$ = Kotlin.Long.fromInt(this.nextBits_za3lpa$(bitCount_0)).shiftLeft(32).add(Kotlin.Long.fromInt(this.nextInt()));
+          }
+          rnd = tmp$;
+        } else {
+          var v;
+          do {
+            var bits = this.nextLong().shiftRightUnsigned(1);
+            v = bits.modulo(n);
+          }
+           while (bits.subtract(v).add(n.subtract(Kotlin.Long.fromInt(1))).toNumber() < 0);
+          rnd = v;
+        }
+        return from.add(rnd);
+      } else {
+        while (true) {
+          var rnd_0 = this.nextLong();
+          if (from.lessThanOrEqual(rnd_0) && rnd_0.lessThan(until))
+            return rnd_0;
+        }
+      }
+    };
+    Random.prototype.nextBoolean = function () {
+      return this.nextBits_za3lpa$(1) !== 0;
+    };
+    Random.prototype.nextDouble = function () {
+      return doubleFromParts(this.nextBits_za3lpa$(26), this.nextBits_za3lpa$(27));
+    };
+    Random.prototype.nextDouble_14dthe$ = function (until) {
+      return this.nextDouble_lu1900$(0.0, until);
+    };
+    Random.prototype.nextDouble_lu1900$ = function (from, until) {
+      var tmp$;
+      checkRangeBounds_1(from, until);
+      var size = until - from;
+      if (isInfinite(size) && isFinite(from) && isFinite(until)) {
+        var r1 = this.nextDouble() * (until / 2 - from / 2);
+        tmp$ = from + r1 + r1;
+      } else {
+        tmp$ = from + this.nextDouble() * size;
+      }
+      var r = tmp$;
+      return r >= until ? nextDown(until) : r;
+    };
+    Random.prototype.nextFloat = function () {
+      return this.nextBits_za3lpa$(24) / 16777216;
+    };
+    function Random$nextBytes$lambda(closure$fromIndex, closure$toIndex, closure$array) {
+      return function () {
+        return 'fromIndex (' + closure$fromIndex + ') or toIndex (' + closure$toIndex + ') are out of range: 0..' + closure$array.length + '.';
+      };
+    }
+    Random.prototype.nextBytes_mj6st8$$default = function (array, fromIndex, toIndex) {
+      if (!(0 <= fromIndex && fromIndex <= array.length ? 0 <= toIndex && toIndex <= array.length : false)) {
+        var message = Random$nextBytes$lambda(fromIndex, toIndex, array)();
+        throw IllegalArgumentException_init_0(message.toString());
+      }if (!(fromIndex <= toIndex)) {
+        var message_0 = 'fromIndex (' + fromIndex + ') must be not greater than toIndex (' + toIndex + ').';
+        throw IllegalArgumentException_init_0(message_0.toString());
+      }var steps = (toIndex - fromIndex | 0) / 4 | 0;
+      var position = {v: fromIndex};
+      for (var index = 0; index < steps; index++) {
+        var v = this.nextInt();
+        array[position.v] = toByte(v);
+        array[position.v + 1 | 0] = toByte(v >>> 8);
+        array[position.v + 2 | 0] = toByte(v >>> 16);
+        array[position.v + 3 | 0] = toByte(v >>> 24);
+        position.v = position.v + 4 | 0;
+      }
+      var remainder = toIndex - position.v | 0;
+      var vr = this.nextBits_za3lpa$(remainder * 8 | 0);
+      for (var i = 0; i < remainder; i++) {
+        array[position.v + i | 0] = toByte(vr >>> (i * 8 | 0));
+      }
+      return array;
+    };
+    Random.prototype.nextBytes_mj6st8$ = function (array, fromIndex, toIndex, callback$default) {
+      if (fromIndex === void 0)
+        fromIndex = 0;
+      if (toIndex === void 0)
+        toIndex = array.length;
+      return callback$default ? callback$default(array, fromIndex, toIndex) : this.nextBytes_mj6st8$$default(array, fromIndex, toIndex);
+    };
+    Random.prototype.nextBytes_fqrh44$ = function (array) {
+      return this.nextBytes_mj6st8$(array, 0, array.length);
+    };
+    Random.prototype.nextBytes_za3lpa$ = function (size) {
+      return this.nextBytes_fqrh44$(new Int8Array(size));
+    };
+    function Random$Default() {
+      Random$Default_instance = this;
+      Random.call(this);
+      this.defaultRandom_0 = defaultPlatformRandom();
+      this.Companion = Random$Companion_getInstance();
+    }
+    Random$Default.prototype.nextBits_za3lpa$ = function (bitCount) {
+      return this.defaultRandom_0.nextBits_za3lpa$(bitCount);
+    };
+    Random$Default.prototype.nextInt = function () {
+      return this.defaultRandom_0.nextInt();
+    };
+    Random$Default.prototype.nextInt_za3lpa$ = function (until) {
+      return this.defaultRandom_0.nextInt_za3lpa$(until);
+    };
+    Random$Default.prototype.nextInt_vux9f0$ = function (from, until) {
+      return this.defaultRandom_0.nextInt_vux9f0$(from, until);
+    };
+    Random$Default.prototype.nextLong = function () {
+      return this.defaultRandom_0.nextLong();
+    };
+    Random$Default.prototype.nextLong_s8cxhz$ = function (until) {
+      return this.defaultRandom_0.nextLong_s8cxhz$(until);
+    };
+    Random$Default.prototype.nextLong_3pjtqy$ = function (from, until) {
+      return this.defaultRandom_0.nextLong_3pjtqy$(from, until);
+    };
+    Random$Default.prototype.nextBoolean = function () {
+      return this.defaultRandom_0.nextBoolean();
+    };
+    Random$Default.prototype.nextDouble = function () {
+      return this.defaultRandom_0.nextDouble();
+    };
+    Random$Default.prototype.nextDouble_14dthe$ = function (until) {
+      return this.defaultRandom_0.nextDouble_14dthe$(until);
+    };
+    Random$Default.prototype.nextDouble_lu1900$ = function (from, until) {
+      return this.defaultRandom_0.nextDouble_lu1900$(from, until);
+    };
+    Random$Default.prototype.nextFloat = function () {
+      return this.defaultRandom_0.nextFloat();
+    };
+    Random$Default.prototype.nextBytes_fqrh44$ = function (array) {
+      return this.defaultRandom_0.nextBytes_fqrh44$(array);
+    };
+    Random$Default.prototype.nextBytes_za3lpa$ = function (size) {
+      return this.defaultRandom_0.nextBytes_za3lpa$(size);
+    };
+    Random$Default.prototype.nextBytes_mj6st8$$default = function (array, fromIndex, toIndex) {
+      return this.defaultRandom_0.nextBytes_mj6st8$(array, fromIndex, toIndex);
+    };
+    Random$Default.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Default', interfaces: [Random]};
     var Random$Default_instance = null;
+    function Random$Default_getInstance() {
+      if (Random$Default_instance === null) {
+        new Random$Default();
+      }return Random$Default_instance;
+    }
+    function Random$Companion() {
+      Random$Companion_instance = this;
+      Random.call(this);
+    }
+    Random$Companion.prototype.nextBits_za3lpa$ = function (bitCount) {
+      return Random$Default_getInstance().nextBits_za3lpa$(bitCount);
+    };
+    Random$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: [Random]};
     var Random$Companion_instance = null;
+    function Random$Companion_getInstance() {
+      if (Random$Companion_instance === null) {
+        new Random$Companion();
+      }return Random$Companion_instance;
+    }
+    Random.$metadata$ = {kind: Kind_CLASS, simpleName: 'Random', interfaces: []};
+    function Random_0(seed) {
+      return XorWowRandom_init(seed, seed >> 31);
+    }
+    function fastLog2(value) {
+      return 31 - Math_0.clz32(value) | 0;
+    }
+    function takeUpperBits($receiver, bitCount) {
+      return $receiver >>> 32 - bitCount & (-bitCount | 0) >> 31;
+    }
+    function checkRangeBounds(from, until) {
+      if (!(until > from)) {
+        var message = boundsErrorMessage(from, until);
+        throw IllegalArgumentException_init_0(message.toString());
+      }}
+    function checkRangeBounds_0(from, until) {
+      if (!(until.compareTo_11rb$(from) > 0)) {
+        var message = boundsErrorMessage(from, until);
+        throw IllegalArgumentException_init_0(message.toString());
+      }}
+    function checkRangeBounds_1(from, until) {
+      if (!(until > from)) {
+        var message = boundsErrorMessage(from, until);
+        throw IllegalArgumentException_init_0(message.toString());
+      }}
+    function boundsErrorMessage(from, until) {
+      return 'Random range is empty: [' + from.toString() + ', ' + until.toString() + ').';
+    }
+    function XorWowRandom(x, y, z, w, v, addend) {
+      Random.call(this);
+      this.x_0 = x;
+      this.y_0 = y;
+      this.z_0 = z;
+      this.w_0 = w;
+      this.v_0 = v;
+      this.addend_0 = addend;
+      if (!((this.x_0 | this.y_0 | this.z_0 | this.w_0 | this.v_0) !== 0)) {
+        var message = 'Initial state must have at least one non-zero element.';
+        throw IllegalArgumentException_init_0(message.toString());
+      }for (var index = 0; index < 64; index++) {
+        this.nextInt();
+      }
+    }
+    XorWowRandom.prototype.nextInt = function () {
+      var t = this.x_0;
+      t = t ^ t >>> 2;
+      this.x_0 = this.y_0;
+      this.y_0 = this.z_0;
+      this.z_0 = this.w_0;
+      var v0 = this.v_0;
+      this.w_0 = v0;
+      t = t ^ t << 1 ^ v0 ^ v0 << 4;
+      this.v_0 = t;
+      this.addend_0 = this.addend_0 + 362437 | 0;
+      return t + this.addend_0 | 0;
+    };
+    XorWowRandom.prototype.nextBits_za3lpa$ = function (bitCount) {
+      return takeUpperBits(this.nextInt(), bitCount);
+    };
+    XorWowRandom.$metadata$ = {kind: Kind_CLASS, simpleName: 'XorWowRandom', interfaces: [Random]};
+    function XorWowRandom_init(seed1, seed2, $this) {
+      $this = $this || Object.create(XorWowRandom.prototype);
+      XorWowRandom.call($this, seed1, seed2, 0, 0, ~seed1, seed1 << 10 ^ seed2 >>> 4);
+      return $this;
+    }
     function ComparableRange(start, endInclusive) {
       this.start_p1gsmm$_0 = start;
       this.endInclusive_jj4lf7$_0 = endInclusive;
@@ -6541,6 +6908,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$ranges.reversed_zf1xzc$ = reversed_9;
     package$collections.get_indices_bvy38s$ = get_indices_5;
     package$collections.lastIndexOf_mjy6jw$ = lastIndexOf;
+    var package$random = package$kotlin.random || (package$kotlin.random = {});
+    package$random.Random = Random;
     package$kotlin.IllegalArgumentException_init_pdl1vj$ = IllegalArgumentException_init_0;
     package$collections.emptyList_287e2$ = emptyList;
     package$collections.ArrayList_init_287e2$ = ArrayList_init;
@@ -6709,6 +7078,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$kotlin.NoSuchElementException_init = NoSuchElementException_init;
     package$kotlin.NoSuchElementException = NoSuchElementException;
     package$io.Serializable = Serializable;
+    package$math.nextDown_yrwdxr$ = nextDown;
+    package$kotlin.isNaN_yrwdxr$ = isNaN_0;
+    package$kotlin.isInfinite_yrwdxr$ = isInfinite;
+    package$kotlin.isFinite_yrwdxr$ = isFinite;
+    package$random.defaultPlatformRandom_8be2vx$ = defaultPlatformRandom;
+    package$random.doubleFromParts_6xvm5r$ = doubleFromParts;
     package$js.get_js_1yb8b7$ = get_js;
     var package$js_1 = package$reflect.js || (package$reflect.js = {});
     var package$internal_1 = package$js_1.internal || (package$js_1.internal = {});
@@ -6757,6 +7132,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Object.defineProperty(CoroutineSingletons, 'UNDECIDED', {get: CoroutineSingletons$UNDECIDED_getInstance});
     Object.defineProperty(CoroutineSingletons, 'RESUMED', {get: CoroutineSingletons$RESUMED_getInstance});
     package$intrinsics.CoroutineSingletons = CoroutineSingletons;
+    Object.defineProperty(Random, 'Default', {get: Random$Default_getInstance});
+    Object.defineProperty(Random, 'Companion', {get: Random$Companion_getInstance});
+    package$random.Random_za3lpa$ = Random_0;
+    package$random.fastLog2_kcn2v3$ = fastLog2;
+    package$random.takeUpperBits_b6l1hq$ = takeUpperBits;
+    package$random.checkRangeBounds_6xvm5r$ = checkRangeBounds;
+    package$random.checkRangeBounds_cfj5zr$ = checkRangeBounds_0;
+    package$random.checkRangeBounds_sdh6z7$ = checkRangeBounds_1;
+    package$random.boundsErrorMessage_dgzutr$ = boundsErrorMessage;
+    package$random.XorWowRandom_init_6xvm5r$ = XorWowRandom_init;
+    package$random.XorWowRandom = XorWowRandom;
     package$ranges.checkStepIsPositive_44uddq$ = checkStepIsPositive;
     package$text.appendElement_k2zgzt$ = appendElement_0;
     package$kotlin.Lazy = Lazy;
@@ -7002,6 +7388,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
   var last = Kotlin.kotlin.collections.last_2p1efm$;
   var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
+  var toRawBits = Kotlin.doubleToRawBits;
   MonotoneChain.prototype = Object.create(AbstractConvexHullGenerator2D.prototype);
   MonotoneChain.prototype.constructor = MonotoneChain;
   function AbstractConvexHullGenerator2D(includeCollinearPoints, tolerance) {
@@ -7233,6 +7620,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var y = this.cross_8a09bi$(v);
     var x = this.dot_8a09bi$(v);
     return Math_0.atan2(y, x);
+  };
+  Vector2D.prototype.rotate_14dthe$ = function (angle) {
+    return new Vector2D(Math_0.cos(angle) * this.x - Math_0.sin(angle) * this.y, Math_0.sin(angle) * this.x + Math_0.cos(angle) * this.y);
   };
   Vector2D.prototype.plus_8a09bi$ = function (v) {
     return new Vector2D(this.x + v.x, this.y + v.y);
@@ -7682,6 +8072,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var Vector2D_init = $module$math.fr.ciadlab.sim.math.geometry.Vector2D_init_9weutc$;
   var toVector3D = $module$math.fr.ciadlab.sim.math.geometry.toVector3D_ri86yn$;
   var project = $module$math.fr.ciadlab.sim.math.geometry.project_lqci66$;
+  var withSimulatedPositionError = $module$car_model.fr.ciadlab.sim.vehicle.withSimulatedPositionError_yrgvwq$;
+  var withSimulationDirectionError = $module$car_model.fr.ciadlab.sim.vehicle.withSimulationDirectionError_yrgvwq$;
   var ReachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.ReachGoalBehavior;
   var getCallableRef = Kotlin.getCallableRef;
   var reachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.reachGoalBehavior_pdvrc7$;
@@ -8181,6 +8573,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.currentScaleFactor_0 = 1.0;
     this.onStatsReceived = null;
     this.lateralControlModel = LateralControlModel$CURVATURE_FOLLOWING_getInstance();
+    this.simulatedPositionError = false;
+    this.simulatedDirectionError = false;
   }
   function WebviewSimulationController$load$lambda(this$WebviewSimulationController, closure$canvas) {
     return function (it) {
@@ -8279,21 +8673,27 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var angleError = polylineSegment.xy.angle_8a09bi$(closure$vehicle.v.direction);
         var lateralError = distance * (left ? 1 : -1);
         statsHandler(closure$stepCount.v * 0.01, LateralControlModel$PURE_PURSUIT_getInstance().name, lateralError, angleError);
-      }switch (this$WebviewSimulationController.lateralControlModel.name) {
+      }var perceivedVehicle = closure$vehicle.v;
+      if (this$WebviewSimulationController.simulatedPositionError)
+        perceivedVehicle = withSimulatedPositionError(perceivedVehicle);
+      if (this$WebviewSimulationController.simulatedDirectionError)
+        perceivedVehicle = withSimulationDirectionError(perceivedVehicle);
+      switch (this$WebviewSimulationController.lateralControlModel.name) {
         case 'PURE_PURSUIT':
-          tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
+          tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
             return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
           })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
           break;
         case 'STANLEY':
-          tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState, void 0, getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
+          tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
             return ReachGoalBehavior.Companion.stanleyLateralControl_hh9uo6$(driverBehavioralState, vehicle);
           })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
           break;
-        default:tmp$ = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+        default:tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
           break;
       }
-      closure$vehicle.v = tmp$;
+      var driverAction = tmp$;
+      closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(driverAction.targetAcceleration, driverAction.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
       return tmp$_0 = closure$stepCount.v, closure$stepCount.v = tmp$_0 + 1 | 0, tmp$_0;
     };
   }
@@ -8437,7 +8837,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }
   function loadSimViewJs$lambda_7(closure$vehicle, closure$driverBehavioralState) {
     return function () {
-      closure$vehicle.v = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+      var driverAction = reachGoalBehavior(closure$vehicle.v, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+      closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(driverAction.targetAcceleration, driverAction.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
       return Unit;
     };
   }
