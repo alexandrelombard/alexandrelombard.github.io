@@ -1,12 +1,12 @@
-import {AfterViewInit, Component, Inject, OnInit} from '@angular/core';
-import {ViewChild, ElementRef} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import Chart from 'chart.js';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {CodeModel} from "@ngstack/code-editor";
 
 declare const simViewApp: any;
 
 const defaultCustomCommand =
-  'function(vehicle, driveBehavioralState) {\n' +
+  'let command = function(vehicle, driverBehavioralState) {\n' +
   '\tlet position = vehicle.position;\n' +
   '\tlet velocity = vehicle.velocity;\n' +
   '\t\n' +
@@ -16,8 +16,8 @@ const defaultCustomCommand =
   '\t\n' +
   '\tlet wheelAngle = 0.0;\n' +
   '\tlet acceleration = 0.0;\n' +
-  '\treturn new DriverBehavioralAction(acceleration, wheelAngle);\n' +
-  '}';
+  '\treturn {acceleration: acceleration, wheelAngle: wheelAngle};\n' +
+  '};';
 
 export interface LateralControlStrategy {
   value: string,
@@ -135,6 +135,10 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
   updateStrategy(): void {
     console.log('Strategy update: ' + this.selectedStrategy);
 
+    // Remove the custom command if any
+    this.simulationWebviewController.customCommand = null;
+
+    // Apply the selected strategy
     switch (this.selectedStrategy) {
       case 'pure-pursuit':
         this.simulationWebviewController.lateralControlModel =
@@ -174,6 +178,13 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('Custom command: ' + result);
+      const functionBody = result + '\nreturn command;';
+      this.simulationWebviewController.customCommand = function(vehicle, driverBehavioralState) {
+        console.log(vehicle);
+        console.log(driverBehavioralState);
+        return {acceleration: 0.0, wheelAngle: 0.0};
+      };
+      // this.simulationWebviewController.customCommand = new Function('functionElement', functionBody);
     });
   }
 }
@@ -187,12 +198,25 @@ export interface CustomCommandDialogData {
   templateUrl: 'custom-lateral-control-dialog.html'
 })
 export class CustomLateralControlDialog {
+  codeModel: CodeModel;
+
   constructor(
     public dialogRef: MatDialogRef<CustomLateralControlDialog>,
     @Inject(MAT_DIALOG_DATA) public data: CustomCommandDialogData) {
+
+    this.codeModel = {
+      language: 'javascript',
+      uri: 'main.js',
+      value: this.data.customCommand,
+    }
+
   }
 
   onCancelClick(): void {
     this.dialogRef.close();
+  }
+
+  onCodeChanged($event: string) {
+    this.data.customCommand = $event;
   }
 }

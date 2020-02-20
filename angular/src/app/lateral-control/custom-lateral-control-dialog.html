@@ -1,13 +1,16 @@
 <h1 mat-dialog-title>Propose a custom command for lateral control</h1>
-<div mat-dialog-content>
+<div mat-dialog-content style="overflow-y: hidden !important;">
   <p>
     Your command must define a wheel angle and an acceleration according to the current perceived state of the
     vehicle. Use the proposed example as a template to propose your own solution.
   </p>
   <h4>Control algorithm</h4>
     <ngs-code-editor
-      theme="vs"
-      [(ngModel)]="data.customCommand"></ngs-code-editor>
+      #codeEditor
+      [codeModel]="codeModel"
+      (valueChanged)="onCodeChanged($event)"
+      style="height: 30vh;"
+      theme="vs"></ngs-code-editor>
   &nbsp;
 </div>
 <div mat-dialog-actions>

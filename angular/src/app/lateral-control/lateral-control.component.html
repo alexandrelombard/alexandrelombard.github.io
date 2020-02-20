@@ -28,13 +28,13 @@
                       matTooltip="Commands will be applied with a delay of 400ms" matTooltipPosition="below">
       Simulated latency
     </mat-slide-toggle>
-    &nbsp;
-<!--    <button mat-stroked-button color="primary" (click)="showCustomCommandPopup()">Propose a custom command</button>-->
+    <br />
+    <button mat-stroked-button color="primary" (click)="showCustomCommandPopup()">Propose a custom command</button>
   </mat-card-content>
 
   <div #sizer style="width: 100%"></div>
 
-  <canvas #canvasElement id="sim-view-js-canvas" [width]="sizer.offsetWidth" height="350"></canvas>
+  <canvas #canvasElement id="sim-view-js-canvas" [width]="sizer.offsetWidth" height="340"></canvas>
 
-  <canvas #chartElement id="chart" height="350" [width]="sizer.offsetWidth" style="height: 350px;"></canvas>
+  <canvas #chartElement id="chart" height="340" [width]="sizer.offsetWidth" style="height: 340px;"></canvas>
 </mat-card>
