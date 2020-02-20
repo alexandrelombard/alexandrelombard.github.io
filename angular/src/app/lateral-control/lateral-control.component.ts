@@ -1,8 +1,23 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Inject, OnInit} from '@angular/core';
 import {ViewChild, ElementRef} from '@angular/core';
 import Chart from 'chart.js';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 
 declare const simViewApp: any;
+
+const defaultCustomCommand =
+  'function(vehicle, driveBehavioralState) {\n' +
+  '\tlet position = vehicle.position;\n' +
+  '\tlet velocity = vehicle.velocity;\n' +
+  '\t\n' +
+  '\tlet laneWidth = 3.5;\n' +
+  '\tlet laneOffset = driverBehavioralState.currentRoad.laneOffset(driverBehavioralState.currentLaneIndex);\n' +
+  '\tlet lane = driverBehavioralState.currentRoad.points.offset(laneOffset * laneWidth);\n' +
+  '\t\n' +
+  '\tlet wheelAngle = 0.0;\n' +
+  '\tlet acceleration = 0.0;\n' +
+  '\treturn new DriverBehavioralAction(acceleration, wheelAngle);\n' +
+  '}';
 
 export interface LateralControlStrategy {
   value: string,
@@ -16,7 +31,7 @@ export interface LateralControlStrategy {
 })
 export class LateralControlComponent implements OnInit, AfterViewInit {
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
   }
 
   @ViewChild('canvasElement', {static: true}) canvasElement: ElementRef;
@@ -55,7 +70,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
     const that = this;
     this.simulationWebviewController.onStatsReceived =
       function (time: number, model: string, lateralError: number, angleError: number) {
-        if(time > that.lastStatMeasureTime + that.statsPeriod) {
+        if (time > that.lastStatMeasureTime + that.statsPeriod) {
           that.chart.data.datasets[0].data.push({x: time, y: lateralError});
           that.chart.data.datasets[1].data.push({x: time, y: angleError});
           that.chart.update(0);
@@ -96,7 +111,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
         ]
       },
       options: {
-        responsive:false,
+        responsive: false,
         maintainAspectRatio: false,
         elements: {
           point: {
@@ -145,5 +160,39 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
     this.simulationWebviewController.simulatedPositionError = this.simulatedDirectionError;
     this.simulationWebviewController.simulatedDirectionError = this.simulatedDirectionError;
     this.simulationWebviewController.simulatedLatency = this.simulatedLatency;
+  }
+
+  /**
+   * Show a popup the user can use to propose his/her own command
+   */
+  showCustomCommandPopup() {
+    const dialogRef = this.dialog.open(CustomLateralControlDialog, {
+      height: '600px',
+      width: '1200px',
+      data: {customCommand: defaultCustomCommand}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Custom command: ' + result);
+    });
+  }
+}
+
+export interface CustomCommandDialogData {
+  customCommand: string;
+}
+
+@Component({
+  selector: 'custom-lateral-control-dialog',
+  templateUrl: 'custom-lateral-control-dialog.html'
+})
+export class CustomLateralControlDialog {
+  constructor(
+    public dialogRef: MatDialogRef<CustomLateralControlDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: CustomCommandDialogData) {
+  }
+
+  onCancelClick(): void {
+    this.dialogRef.close();
   }
 }

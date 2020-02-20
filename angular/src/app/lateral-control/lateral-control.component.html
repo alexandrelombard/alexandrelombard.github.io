@@ -25,10 +25,11 @@
     </mat-slide-toggle>
     &nbsp;
     <mat-slide-toggle color="primary" [(ngModel)]="simulatedLatency" (change)="updateErrors()"
-                      matTooltip="Commands will be applied with a delay of 300ms" matTooltipPosition="below">
+                      matTooltip="Commands will be applied with a delay of 400ms" matTooltipPosition="below">
       Simulated latency
     </mat-slide-toggle>
-
+    &nbsp;
+<!--    <button mat-stroked-button color="primary" (click)="showCustomCommandPopup()">Propose a custom command</button>-->
   </mat-card-content>
 
   <div #sizer style="width: 100%"></div>
