@@ -678,13 +678,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function withSimulatedPositionError($receiver, errorRadius) {
     if (errorRadius === void 0)
       errorRadius = 0.1;
-    var tmp$ = $receiver.position;
-    var x = Random.Default.nextDouble_14dthe$(2 * math.PI);
-    var tmp$_0 = Math_0.cos(x);
-    var x_0 = Random.Default.nextDouble_14dthe$(2 * math.PI);
-    return $receiver.copy_cz5p3k$(tmp$.plus_8a09bi$((new Vector2D(tmp$_0, Math_0.sin(x_0))).times_14dthe$(errorRadius)));
+    var alpha = Random.Default.nextDouble_14dthe$(2 * math.PI);
+    return $receiver.copy_cz5p3k$($receiver.position.plus_8a09bi$((new Vector2D(Math_0.cos(alpha), Math_0.sin(alpha))).times_14dthe$(errorRadius)));
   }
-  function withSimulationDirectionError($receiver, errorAngleLimit) {
+  function withSimulatedDirectionError($receiver, errorAngleLimit) {
     if (errorAngleLimit === void 0)
       errorAngleLimit = 0.1;
     var erroneousDirection = $receiver.direction.rotate_14dthe$(Random.Default.nextDouble_lu1900$(-errorAngleLimit, errorAngleLimit));
@@ -696,7 +693,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var package$vehicle = package$sim.vehicle || (package$sim.vehicle = {});
   package$vehicle.Vehicle = Vehicle;
   package$vehicle.withSimulatedPositionError_yrgvwq$ = withSimulatedPositionError;
-  package$vehicle.withSimulationDirectionError_yrgvwq$ = withSimulationDirectionError;
+  package$vehicle.withSimulatedDirectionError_yrgvwq$ = withSimulatedDirectionError;
   return _;
 }));
 
@@ -8073,7 +8070,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var toVector3D = $module$math.fr.ciadlab.sim.math.geometry.toVector3D_ri86yn$;
   var project = $module$math.fr.ciadlab.sim.math.geometry.project_lqci66$;
   var withSimulatedPositionError = $module$car_model.fr.ciadlab.sim.vehicle.withSimulatedPositionError_yrgvwq$;
-  var withSimulationDirectionError = $module$car_model.fr.ciadlab.sim.vehicle.withSimulationDirectionError_yrgvwq$;
+  var withSimulatedDirectionError = $module$car_model.fr.ciadlab.sim.vehicle.withSimulatedDirectionError_yrgvwq$;
   var ReachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.ReachGoalBehavior;
   var getCallableRef = Kotlin.getCallableRef;
   var reachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.reachGoalBehavior_pdvrc7$;
@@ -8575,9 +8572,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.onStatsReceived = null;
     this.lateralControlModel = LateralControlModel$CURVATURE_FOLLOWING_getInstance();
     this.simulatedPositionError = false;
+    this.simulatedPositionErrorRadius = 0.1;
     this.simulatedDirectionError = false;
+    this.simulatedDirectionErrorRange = 0.1;
     this.simulatedLatency = false;
-    this.simulatedLatencyDelay = unit(300.0, physics.Units.Milliseconds);
+    this.simulatedLatencyDelay = unit(400.0, physics.Units.Milliseconds);
+    this.customCommand = null;
     this.lastCommand_0 = new DriverBehavioralAction(0.0, 0.0);
     this.lastCommandTime_0 = 0.0;
   }
@@ -8680,22 +8680,27 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         statsHandler(closure$stepCount.v * 0.01, LateralControlModel$PURE_PURSUIT_getInstance().name, lateralError, angleError);
       }var perceivedVehicle = closure$vehicle.v;
       if (this$WebviewSimulationController.simulatedPositionError)
-        perceivedVehicle = withSimulatedPositionError(perceivedVehicle);
+        perceivedVehicle = withSimulatedPositionError(perceivedVehicle, this$WebviewSimulationController.simulatedPositionErrorRadius);
       if (this$WebviewSimulationController.simulatedDirectionError)
-        perceivedVehicle = withSimulationDirectionError(perceivedVehicle);
-      switch (this$WebviewSimulationController.lateralControlModel.name) {
-        case 'PURE_PURSUIT':
-          tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
-            return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
-          })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
-          break;
-        case 'STANLEY':
-          tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
-            return ReachGoalBehavior.Companion.stanleyLateralControl_hh9uo6$(driverBehavioralState, vehicle);
-          })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
-          break;
-        default:tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
-          break;
+        perceivedVehicle = withSimulatedDirectionError(perceivedVehicle, this$WebviewSimulationController.simulatedDirectionErrorRange);
+      var currentCustomCommand = this$WebviewSimulationController.customCommand;
+      if (currentCustomCommand != null)
+        tmp$ = currentCustomCommand(perceivedVehicle, closure$driverBehavioralState);
+      else {
+        switch (this$WebviewSimulationController.lateralControlModel.name) {
+          case 'PURE_PURSUIT':
+            tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
+              return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
+            })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+            break;
+          case 'STANLEY':
+            tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
+              return ReachGoalBehavior.Companion.stanleyLateralControl_hh9uo6$(driverBehavioralState, vehicle);
+            })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+            break;
+          default:tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+            break;
+        }
       }
       var driverAction = tmp$;
       if (!this$WebviewSimulationController.simulatedLatency) {
@@ -8707,7 +8712,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$WebviewSimulationController.lastCommand_0.targetAcceleration, this$WebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
           this$WebviewSimulationController.lastCommand_0 = driverAction;
           this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * unit(10.0, physics.Units.Milliseconds);
-        }}
+        } else {
+          closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$WebviewSimulationController.lastCommand_0.targetAcceleration, this$WebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
+        }
+      }
       return tmp$_0 = closure$stepCount.v, closure$stepCount.v = tmp$_0 + 1 | 0, tmp$_0;
     };
   }
