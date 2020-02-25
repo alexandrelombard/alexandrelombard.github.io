@@ -1,5 +1,14 @@
-var simViewApp =
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["simViewApp"] = factory();
+	else
+		root["simViewApp"] = factory();
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -302,7 +311,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var math = Kotlin.kotlin.math;
   var Math_0 = Math;
   var Vector2D = $module$math.fr.ciadlab.sim.math.geometry.Vector2D;
-  var offset = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.offset_2lvzg3$;
+  var offset = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.offset;
   var toVector3D = $module$math.fr.ciadlab.sim.math.geometry.toVector3D_ri86yn$;
   var project = $module$math.fr.ciadlab.sim.math.geometry.project_lqci66$;
   var length = $module$math.fr.ciadlab.sim.math.geometry.length_u7xvl7$;
@@ -439,7 +448,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   ReachGoalBehavior$Companion.prototype.purePursuitLateralControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
     var tmp$, tmp$_0, tmp$_1;
     var laneWidth = 3.5;
-    var laneOffset = driverBehavioralState.currentRoad.laneOffset_za3lpa$(driverBehavioralState.currentLaneIndex);
+    var laneOffset = driverBehavioralState.currentRoad.laneOffset(driverBehavioralState.currentLaneIndex);
     var lane = offset(driverBehavioralState.currentRoad.points, laneOffset * laneWidth);
     var projectionData = project(lane, toVector3D(vehicle.position));
     var b = 2.0 * vehicle.velocity.norm;
@@ -454,7 +463,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   };
   ReachGoalBehavior$Companion.prototype.stanleyLateralControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
     var laneWidth = 3.5;
-    var laneOffset = driverBehavioralState.currentRoad.laneOffset_za3lpa$(driverBehavioralState.currentLaneIndex);
+    var laneOffset = driverBehavioralState.currentRoad.laneOffset(driverBehavioralState.currentLaneIndex);
     var lane = offset(driverBehavioralState.currentRoad.points, laneOffset * laneWidth);
     var frontAxlePosition = toVector3D(vehicle.position.plus_8a09bi$(Vector2D_init(vehicle.wheelBase / 2.0, vehicle.direction)));
     var projectionData = project(lane, frontAxlePosition);
@@ -468,7 +477,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   };
   ReachGoalBehavior$Companion.prototype.curvatureFollowingLateralControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
     var laneWidth = 3.5;
-    var laneOffset = driverBehavioralState.currentRoad.laneOffset_za3lpa$(driverBehavioralState.currentLaneIndex);
+    var laneOffset = driverBehavioralState.currentRoad.laneOffset(driverBehavioralState.currentLaneIndex);
     var lane = offset(driverBehavioralState.currentRoad.points, laneOffset * laneWidth);
     var frontAxlePosition = toVector3D(vehicle.position.plus_8a09bi$(Vector2D_init(vehicle.wheelBase / 2.0, vehicle.direction)));
     var projectionData = project(lane, frontAxlePosition);
@@ -1029,37 +1038,37 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.destinationRoad = destinationRoad;
     this.destinationLane = destinationLane;
     var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
-    if (this.sourceRoad.isBackwardLane_za3lpa$(this.sourceLane)) {
+    if (this.sourceRoad.isBackwardLane(this.sourceLane)) {
       tmp$ = this.sourceRoad.begin();
     } else {
       tmp$ = this.sourceRoad.end();
     }
     this.sourcePoint = tmp$;
-    if (this.sourceRoad.isBackwardLane_za3lpa$(this.sourceLane)) {
+    if (this.sourceRoad.isBackwardLane(this.sourceLane)) {
       tmp$_0 = this.sourceRoad.beginDirection().unaryMinus();
     } else {
       tmp$_0 = this.sourceRoad.endDirection();
     }
     this.sourceDirection = tmp$_0;
-    if (this.sourceRoad.isBackwardLane_za3lpa$(this.sourceLane)) {
+    if (this.sourceRoad.isBackwardLane(this.sourceLane)) {
       tmp$_1 = new Vector3D(this.sourceDirection.y, -this.sourceDirection.x, this.sourceDirection.z);
     } else {
       tmp$_1 = new Vector3D(-this.sourceDirection.y, this.sourceDirection.x, this.sourceDirection.z);
     }
     this.sourceNormal = tmp$_1;
-    if (this.destinationRoad.isBackwardLane_za3lpa$(this.destinationLane)) {
+    if (this.destinationRoad.isBackwardLane(this.destinationLane)) {
       tmp$_2 = this.destinationRoad.end();
     } else {
       tmp$_2 = this.destinationRoad.begin();
     }
     this.destinationPoint = tmp$_2;
-    if (this.destinationRoad.isBackwardLane_za3lpa$(this.destinationLane)) {
+    if (this.destinationRoad.isBackwardLane(this.destinationLane)) {
       tmp$_3 = this.destinationRoad.endDirection().unaryMinus();
     } else {
       tmp$_3 = this.destinationRoad.beginDirection();
     }
     this.destinationDirection = tmp$_3;
-    if (this.destinationRoad.isBackwardLane_za3lpa$(this.destinationLane)) {
+    if (this.destinationRoad.isBackwardLane(this.destinationLane)) {
       tmp$_4 = new Vector3D(this.destinationDirection.y, -this.destinationDirection.x, this.destinationDirection.z);
     } else {
       tmp$_4 = new Vector3D(-this.destinationDirection.y, this.destinationDirection.x, this.destinationDirection.z);
@@ -1114,21 +1123,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Object.defineProperty(Road.prototype, 'length', {get: function () {
     return this.length_99w0ky$_0.value;
   }});
-  Road.prototype.isForwardLane_za3lpa$ = function (laneIndex) {
+  Road.prototype.isForwardLane = function (laneIndex) {
     return laneIndex >= this.backwardLanesCount;
   };
-  Road.prototype.isBackwardLane_za3lpa$ = function (laneIndex) {
+  Road.prototype.isBackwardLane = function (laneIndex) {
     return laneIndex < this.backwardLanesCount;
   };
-  Road.prototype.laneOffset_za3lpa$ = function (laneIndex) {
+  Road.prototype.laneOffset = function (laneIndex) {
     if (this.totalLanesCount % 2 === 0) {
       return laneIndex - (this.totalLanesCount - 1 | 0) / 2.0;
     } else {
       return laneIndex - (this.totalLanesCount - 1 | 0) / 2.0;
     }
   };
-  Road.prototype.lane_5wr77w$ = function (laneIndex, laneWidth) {
-    var laneOffset = this.laneOffset_za3lpa$(laneIndex) * laneWidth;
+  Road.prototype.lane = function (laneIndex, laneWidth) {
+    var laneOffset = this.laneOffset(laneIndex) * laneWidth;
     return offset(this.points, laneOffset);
   };
   Road.prototype.begin = function () {
@@ -1299,7 +1308,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   package$infrastructure.IntersectionBuilder = IntersectionBuilder;
   package$infrastructure.LaneConnector = LaneConnector;
   package$infrastructure.Road = Road;
-  package$infrastructure.offset_2lvzg3$ = offset;
+  package$infrastructure.offset = offset;
   package$infrastructure.RoadNetwork = RoadNetwork;
   Object.defineProperty(TrafficType, 'RIGHT_HAND', {get: TrafficType$RIGHT_HAND_getInstance});
   Object.defineProperty(TrafficType, 'LEFT_HAND', {get: TrafficType$LEFT_HAND_getInstance});
@@ -6915,6 +6924,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$collections.ArrayList_init_ww73n8$ = ArrayList_init_0;
     package$collections.HashSet_init_287e2$ = HashSet_init;
     package$kotlin.UnsupportedOperationException_init_pdl1vj$ = UnsupportedOperationException_init_0;
+    package$collections.listOf_mh5how$ = listOf;
     package$collections.collectionSizeOrDefault_ba2ldo$ = collectionSizeOrDefault;
     package$collections.get_lastIndex_55thoc$ = get_lastIndex_12;
     package$collections.first_2p1efm$ = first_18;
@@ -7026,7 +7036,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$collections.copyToArray = copyToArray;
     package$collections.copyToArrayImpl = copyToArrayImpl;
     package$collections.copyToExistingArrayImpl = copyToArrayImpl_0;
-    package$collections.listOf_mh5how$ = listOf;
     package$collections.AbstractMutableCollection = AbstractMutableCollection;
     package$collections.AbstractMutableList = AbstractMutableList;
     AbstractMutableMap.SimpleEntry_init_trwmqg$ = AbstractMutableMap$AbstractMutableMap$SimpleEntry_init;
@@ -8065,7 +8074,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var DriverBehavioralState = $module$car_behavior.fr.ciadlab.sim.car.behavior.DriverBehavioralState;
   var Vector2D = $module$math.fr.ciadlab.sim.math.geometry.Vector2D;
   var Vehicle = $module$car_model.fr.ciadlab.sim.vehicle.Vehicle;
-  var offset = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.offset_2lvzg3$;
+  var offset = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.offset;
   var Vector2D_init = $module$math.fr.ciadlab.sim.math.geometry.Vector2D_init_9weutc$;
   var toVector3D = $module$math.fr.ciadlab.sim.math.geometry.toVector3D_ri86yn$;
   var project = $module$math.fr.ciadlab.sim.math.geometry.project_lqci66$;
@@ -8667,7 +8676,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var statsHandler = this$WebviewSimulationController.onStatsReceived;
       if (statsHandler != null) {
         var laneWidth = 3.5;
-        var laneOffset = closure$driverBehavioralState.currentRoad.laneOffset_za3lpa$(closure$driverBehavioralState.currentLaneIndex);
+        var laneOffset = closure$driverBehavioralState.currentRoad.laneOffset(closure$driverBehavioralState.currentLaneIndex);
         var lane = offset(closure$driverBehavioralState.currentRoad.points, laneOffset * laneWidth);
         var frontAxlePosition = toVector3D(closure$vehicle.v.position.plus_8a09bi$(Vector2D_init(closure$vehicle.v.wheelBase / 2.0, closure$vehicle.v.direction)));
         var projectionData = project(lane, frontAxlePosition);
@@ -8902,13 +8911,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var laneConnector = tmp$.next();
       var sourceRoad = laneConnector.sourceRoad;
       var destinationRoad = laneConnector.destinationRoad;
-      if (sourceRoad.isForwardLane_za3lpa$(laneConnector.sourceLane)) {
+      if (sourceRoad.isForwardLane(laneConnector.sourceLane)) {
         tmp$_0 = endBounds($receiver, sourceRoad);
       } else {
         tmp$_0 = beginBounds($receiver, sourceRoad);
       }
       var sourceBounds = tmp$_0;
-      if (destinationRoad.isForwardLane_za3lpa$(laneConnector.destinationLane)) {
+      if (destinationRoad.isForwardLane(laneConnector.destinationLane)) {
         tmp$_1 = beginBounds($receiver, destinationRoad);
       } else {
         tmp$_1 = endBounds($receiver, destinationRoad);
@@ -8944,8 +8953,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }
   function laneConnectorView$lambda(closure$sourcePoint, closure$sourceNormal, closure$sourceRoad, closure$sourceLane, this$laneConnectorView, closure$connectorEnd, closure$laneConnector, closure$color, closure$lineWidth) {
     return function ($receiver) {
-      $receiver.startX = closure$sourcePoint.x + closure$sourceNormal.times_14dthe$(closure$sourceRoad.laneOffset_za3lpa$(closure$sourceLane)).times_14dthe$(this$laneConnectorView.laneWidth).x;
-      $receiver.startY = closure$sourcePoint.y + closure$sourceNormal.times_14dthe$(closure$sourceRoad.laneOffset_za3lpa$(closure$sourceLane)).times_14dthe$(this$laneConnectorView.laneWidth).y;
+      $receiver.startX = closure$sourcePoint.x + closure$sourceNormal.times_14dthe$(closure$sourceRoad.laneOffset(closure$sourceLane)).times_14dthe$(this$laneConnectorView.laneWidth).x;
+      $receiver.startY = closure$sourcePoint.y + closure$sourceNormal.times_14dthe$(closure$sourceRoad.laneOffset(closure$sourceLane)).times_14dthe$(this$laneConnectorView.laneWidth).y;
       $receiver.endX = closure$connectorEnd.x;
       $receiver.endY = closure$connectorEnd.y;
       $receiver.controlX1 = $receiver.startX + closure$laneConnector.sourceDirection.x * 20;
@@ -8980,7 +8989,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var destinationPoint = laneConnector.destinationPoint;
     var sourceNormal = laneConnector.sourceNormal;
     var destinationNormal = laneConnector.destinationNormal;
-    var connectorEnd = destinationPoint.add_9weuu7$(destinationRoad.laneOffset_za3lpa$(destinationLane) * $receiver.laneWidth, destinationNormal);
+    var connectorEnd = destinationPoint.add_9weuu7$(destinationRoad.laneOffset(destinationLane) * $receiver.laneWidth, destinationNormal);
     cubiccurve(context, laneConnectorView$lambda(sourcePoint, sourceNormal, sourceRoad, sourceLane, $receiver, connectorEnd, laneConnector, color, lineWidth));
     var arrowP1 = connectorEnd.add_9weuu7$(arrowRatio * arrowSize, laneConnector.destinationDirection.unaryMinus()).add_9weuu7$(arrowSize, laneConnector.destinationNormal);
     var arrowP2 = connectorEnd.add_9weuu7$(arrowRatio * arrowSize, laneConnector.destinationDirection.unaryMinus()).add_9weuu7$(arrowSize, laneConnector.destinationNormal.unaryMinus());
@@ -9237,4 +9246,5 @@ module.exports = __webpack_require__(/*! C:\Users\alombard\Idea Projects\light-t
 /***/ })
 
 /******/ });
+});
 //# sourceMappingURL=sim-view-js.js.map
