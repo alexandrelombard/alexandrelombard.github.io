@@ -5,19 +5,16 @@ import {CodeModel} from "@ngstack/code-editor";
 
 declare const simViewApp: any;
 
-const defaultCustomCommand =
-  'let command = function(vehicle, driverBehavioralState) {\n' +
-  '\tlet position = vehicle.position;\n' +
-  '\tlet velocity = vehicle.velocity;\n' +
-  '\t\n' +
-  '\tlet laneWidth = 3.5;\n' +
-  '\tlet laneOffset = driverBehavioralState.currentRoad.laneOffset(driverBehavioralState.currentLaneIndex);\n' +
-  '\tlet lane = driverBehavioralState.currentRoad.points.offset(laneOffset * laneWidth);\n' +
-  '\t\n' +
-  '\tlet wheelAngle = 0.0;\n' +
-  '\tlet acceleration = 0.0;\n' +
-  '\treturn {acceleration: acceleration, wheelAngle: wheelAngle};\n' +
-  '};';
+let defaultCustomCommand =
+  'let position = vehicle.position;\n' +
+  'let velocity = vehicle.velocity;\n' +
+  '\n' +
+  'let laneWidth = 3.5;\n' +
+  'let lane = driverBehavioralState.currentRoad.lane(driverBehavioralState.currentLaneIndex, laneWidth);\n' +
+  '\n' +
+  'let wheelAngle = 0.0;\n' +
+  'let acceleration = 0.0;\n' +
+  'return {targetAcceleration: acceleration, targetWheelAngle: wheelAngle};\n';
 
 export interface LateralControlStrategy {
   value: string,
@@ -177,16 +174,18 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      defaultCustomCommand = result;  // So the user don't have to rewrite it when he/she goes back to it
       console.log('Custom command: ' + result);
-      const functionBody = result + '\nreturn command;';
+      const wrapper = new Function('vehicle', 'driverBehavioralState', result);
       this.simulationWebviewController.customCommand = function(vehicle, driverBehavioralState) {
-        console.log(vehicle);
-        console.log(driverBehavioralState);
-        return {acceleration: 0.0, wheelAngle: 0.0};
+        return wrapper(vehicle, driverBehavioralState);
       };
-      // this.simulationWebviewController.customCommand = new Function('functionElement', functionBody);
     });
   }
+}
+
+function wrapper(callback,) {
+  return callback()
 }
 
 export interface CustomCommandDialogData {
