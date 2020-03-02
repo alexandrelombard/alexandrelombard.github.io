@@ -8617,8 +8617,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function WebviewSimulationController$load$lambda_2(closure$drag, closure$previousX, this$WebviewSimulationController, closure$previousY, closure$canvas) {
     return function (it) {
       if (closure$drag.v) {
-        var deltaX = (it.pageX - closure$previousX.v) / (2.0 * this$WebviewSimulationController.currentScaleFactor_0);
-        var deltaY = (it.pageY - closure$previousY.v) / (2.0 * this$WebviewSimulationController.currentScaleFactor_0);
+        var deltaX = (it.pageX - closure$previousX.v) / this$WebviewSimulationController.currentScaleFactor_0;
+        var deltaY = (it.pageY - closure$previousY.v) / this$WebviewSimulationController.currentScaleFactor_0;
         context2D(closure$canvas).translate(deltaX, deltaY);
         closure$previousX.v = it.pageX;
         closure$previousY.v = it.pageY;
