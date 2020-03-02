@@ -496,7 +496,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var curvature = Math_0.sign($receiver) * subtraction.norm;
     var tmp$ = vehicle.velocity.norm;
     var b_0 = vehicle.velocity.norm * 2.0;
-    return lombardLateralControl(angleError, lateralError, left, tmp$, 0.2, curvature, Math_0.max(2.0, b_0), vehicle.wheelBase);
+    return lombardLateralControl(angleError, lateralError, left, tmp$, 0.1, curvature, Math_0.max(2.0, b_0), vehicle.wheelBase);
   };
   ReachGoalBehavior$Companion.prototype.defaultLongitudinalControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
     return 0.0;
@@ -8577,6 +8577,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }
   LateralControlModel.valueOf_61zpoe$ = LateralControlModel$valueOf;
   function WebviewSimulationController() {
+    this.simulationStepTime_0 = unit(10.0, physics.Units.Milliseconds);
     this.currentScaleFactor_0 = 1.0;
     this.onStatsReceived = null;
     this.lateralControlModel = LateralControlModel$CURVATURE_FOLLOWING_getInstance();
@@ -8613,11 +8614,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return it;
     };
   }
-  function WebviewSimulationController$load$lambda_2(closure$drag, closure$previousX, closure$previousY, closure$canvas) {
+  function WebviewSimulationController$load$lambda_2(closure$drag, closure$previousX, this$WebviewSimulationController, closure$previousY, closure$canvas) {
     return function (it) {
       if (closure$drag.v) {
-        var deltaX = it.pageX - closure$previousX.v;
-        var deltaY = it.pageY - closure$previousY.v;
+        var deltaX = (it.pageX - closure$previousX.v) / (2.0 * this$WebviewSimulationController.currentScaleFactor_0);
+        var deltaY = (it.pageY - closure$previousY.v) / (2.0 * this$WebviewSimulationController.currentScaleFactor_0);
         context2D(closure$canvas).translate(deltaX, deltaY);
         closure$previousX.v = it.pageX;
         closure$previousY.v = it.pageY;
@@ -8686,7 +8687,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var left = side > 0.0;
         var angleError = polylineSegment.xy.angle_8a09bi$(closure$vehicle.v.direction);
         var lateralError = distance * (left ? 1 : -1);
-        statsHandler(closure$stepCount.v * 0.01, LateralControlModel$PURE_PURSUIT_getInstance().name, lateralError, angleError);
+        var controlName = this$WebviewSimulationController.customCommand == null ? this$WebviewSimulationController.lateralControlModel.name : 'Custom command';
+        statsHandler(closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0, controlName, lateralError, angleError);
       }var perceivedVehicle = closure$vehicle.v;
       if (this$WebviewSimulationController.simulatedPositionError)
         perceivedVehicle = withSimulatedPositionError(perceivedVehicle, this$WebviewSimulationController.simulatedPositionErrorRadius);
@@ -8700,14 +8702,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
           case 'PURE_PURSUIT':
             tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
               return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
-            })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+            })).apply_14dthe$(this$WebviewSimulationController.simulationStepTime_0);
             break;
           case 'STANLEY':
             tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
               return ReachGoalBehavior.Companion.stanleyLateralControl_hh9uo6$(driverBehavioralState, vehicle);
-            })).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+            })).apply_14dthe$(this$WebviewSimulationController.simulationStepTime_0);
             break;
-          default:tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState).apply_14dthe$(unit(10.0, physics.Units.Milliseconds));
+          default:tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState).apply_14dthe$(this$WebviewSimulationController.simulationStepTime_0);
             break;
         }
       }
@@ -8715,12 +8717,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (!this$WebviewSimulationController.simulatedLatency) {
         closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(driverAction.targetAcceleration, driverAction.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
         this$WebviewSimulationController.lastCommand_0 = driverAction;
-        this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * unit(10.0, physics.Units.Milliseconds);
+        this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0;
       } else {
-        if (this$WebviewSimulationController.lastCommandTime_0 + closure$stepCount.v * unit(10.0, physics.Units.Milliseconds) > this$WebviewSimulationController.simulatedLatencyDelay) {
+        if (this$WebviewSimulationController.lastCommandTime_0 + closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0 > this$WebviewSimulationController.simulatedLatencyDelay) {
           closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$WebviewSimulationController.lastCommand_0.targetAcceleration, this$WebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
           this$WebviewSimulationController.lastCommand_0 = driverAction;
-          this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * unit(10.0, physics.Units.Milliseconds);
+          this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0;
         } else {
           closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$WebviewSimulationController.lastCommand_0.targetAcceleration, this$WebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
         }
@@ -8738,7 +8740,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var previousY = {v: 0.0};
     canvas.onmousedown = WebviewSimulationController$load$lambda_0(drag, previousX, previousY);
     canvas.onmouseup = WebviewSimulationController$load$lambda_1(drag);
-    canvas.onmousemove = WebviewSimulationController$load$lambda_2(drag, previousX, previousY, canvas);
+    canvas.onmousemove = WebviewSimulationController$load$lambda_2(drag, previousX, this, previousY, canvas);
     context2D(canvas).translate((canvas.width - 200.0) / 2.0, (canvas.height - 200.0) / 2.0);
     context2D(canvas).scale(2.5, 2.5);
     var eightShapedRoadNetworkModel = roadNetwork(WebviewSimulationController$load$lambda_3);
@@ -8780,8 +8782,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   function loadSimViewJs$lambda_2(closure$drag, closure$previousX, closure$previousY, closure$canvas) {
     return function (it) {
       if (closure$drag.v) {
-        var deltaX = it.pageX - closure$previousX.v;
-        var deltaY = it.pageY - closure$previousY.v;
+        var deltaX = (it.pageX - closure$previousX.v) / (2.0 * currentScaleFactor);
+        var deltaY = (it.pageY - closure$previousY.v) / (2.0 * currentScaleFactor);
         context2D(closure$canvas).translate(deltaX, deltaY);
         closure$previousX.v = it.pageX;
         closure$previousY.v = it.pageY;
