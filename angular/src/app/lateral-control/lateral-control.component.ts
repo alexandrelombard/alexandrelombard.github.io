@@ -182,6 +182,22 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
       };
     });
   }
+
+  /**
+   * Exports measures as a CSV file
+   */
+  exportMeasures() {
+    let dl = document.createElement("a");
+    dl.id = "download";
+    dl.download = "data_" + Date.now() + ".json";
+    dl.href = URL.createObjectURL(new Blob([JSON.stringify(
+      {
+        lateralError: this.chart.data.datasets[0].data,
+        angleError: this.chart.data.datasets[1].data,
+      }
+    )]));
+    dl.click();
+  }
 }
 
 function wrapper(callback,) {
