@@ -184,7 +184,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Exports measures as a CSV file
+   * Exports measures as a JSON file
    */
   exportMeasures() {
     let dl = document.createElement("a");
