@@ -35,9 +35,9 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
   @ViewChild('chartElement', {static: true}) chartElement: ElementRef;
 
   selectedStrategy: string;
-  simulatedPositionError: boolean = false;
-  simulatedDirectionError: boolean = false;
-  simulatedLatency: boolean = false;
+  simulatedPositionError: boolean = true;
+  simulatedDirectionError: boolean = true;
+  simulatedLatency: boolean = true;
 
   strategies: LateralControlStrategy[] = [
     {value: 'pure-pursuit', viewValue: 'Pure-Pursuit'},
