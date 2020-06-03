@@ -60,7 +60,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
     let canvasElementId = (<HTMLCanvasElement>this.canvasElement.nativeElement).id;
 
     this.simulationWebviewController =
-      new this.simulationWebViewPackage.controllers.WebviewSimulationController();
+      new this.simulationWebViewPackage.controllers.LateralControlWebviewSimulationController();
     this.simulationWebviewController.load(canvasElementId);
     this.simulationWebviewController.lateralControlModel =
       this.simulationWebViewPackage.controllers.LateralControlModel.PURE_PURSUIT;
