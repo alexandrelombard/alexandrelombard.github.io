@@ -38,6 +38,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
   simulatedPositionError: boolean = true;
   simulatedDirectionError: boolean = true;
   simulatedLatency: boolean = true;
+  speed = 0.0;
 
   strategies: LateralControlStrategy[] = [
     {value: 'pure-pursuit', viewValue: 'Pure-Pursuit'},
@@ -163,6 +164,10 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
     this.simulationWebviewController.simulatedLatency = this.simulatedLatency;
   }
 
+  updateSpeed() {
+
+  }
+
   /**
    * Show a popup the user can use to propose his/her own command
    */
@@ -174,12 +179,14 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      defaultCustomCommand = result;  // So the user don't have to rewrite it when he/she goes back to it
-      console.log('Custom command: ' + result);
-      const wrapper = new Function('vehicle', 'driverBehavioralState', result);
-      this.simulationWebviewController.customCommand = function(vehicle, driverBehavioralState) {
-        return wrapper(vehicle, driverBehavioralState);
-      };
+      if(result != null) {
+        defaultCustomCommand = result;  // So the user don't have to rewrite it when he/she goes back to it
+        console.log('Custom command: ' + result);
+        const wrapper = new Function('vehicle', 'driverBehavioralState', result);
+        this.simulationWebviewController.customCommand = function(vehicle, driverBehavioralState) {
+          return wrapper(vehicle, driverBehavioralState);
+        };
+      }
     });
   }
 

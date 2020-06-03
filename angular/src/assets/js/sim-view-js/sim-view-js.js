@@ -300,20 +300,30 @@ process.umask = function() { return 0; };
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
   if (true)
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js"), __webpack_require__(/*! math */ "./kotlin-dce/math.js"), __webpack_require__(/*! infrastructure-model */ "./kotlin-dce/infrastructure-model.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js"), __webpack_require__(/*! math */ "./kotlin-dce/math.js"), __webpack_require__(/*! car-model */ "./kotlin-dce/car-model.js"), __webpack_require__(/*! infrastructure-model */ "./kotlin-dce/infrastructure-model.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   else {}
-}(this, function (_, Kotlin, $module$math, $module$infrastructure_model) {
+}(this, function (_, Kotlin, $module$math, $module$car_model, $module$infrastructure_model) {
   'use strict';
+  var lazy = Kotlin.kotlin.lazy_klfg04$;
   var Kind_CLASS = Kotlin.Kind.CLASS;
-  var math = Kotlin.kotlin.math;
-  var Math_0 = Math;
+  var defineInlineFunction = Kotlin.defineInlineFunction;
+  var wrapFunction = Kotlin.wrapFunction;
+  var kotlin_js_internal_DoubleCompanionObject = Kotlin.kotlin.js.internal.DoubleCompanionObject;
+  var Vector3D = $module$math.fr.ciadlab.sim.math.geometry.Vector3D;
+  var project = $module$math.fr.ciadlab.sim.math.geometry.project_lqci66$;
   var Vector2D = $module$math.fr.ciadlab.sim.math.geometry.Vector2D;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var Array_0 = Array;
+  var Math_0 = Math;
+  var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
+  var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
+  var Collection = Kotlin.kotlin.collections.Collection;
+  var math = Kotlin.kotlin.math;
   var offset = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.offset;
   var toVector3D = $module$math.fr.ciadlab.sim.math.geometry.toVector3D_ri86yn$;
-  var project = $module$math.fr.ciadlab.sim.math.geometry.project_lqci66$;
   var length = $module$math.fr.ciadlab.sim.math.geometry.length_u7xvl7$;
   var pointAtLength = $module$math.fr.ciadlab.sim.math.geometry.pointAtLength_2lvzg3$;
   var Vector2D_init = $module$math.fr.ciadlab.sim.math.geometry.Vector2D_init_9weutc$;
@@ -345,9 +355,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   DriverBehavioralAction.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.targetAcceleration, other.targetAcceleration) && Kotlin.equals(this.targetWheelAngle, other.targetWheelAngle)))));
   };
-  function DriverBehavioralState(currentRoad, currentLaneIndex, maximumSpeed, goal) {
+  function DriverBehavioralState(currentRoad, currentLaneIndex, leaders, maximumSpeed, goal) {
     this.currentRoad = currentRoad;
     this.currentLaneIndex = currentLaneIndex;
+    this.leaders = leaders;
     this.maximumSpeed = maximumSpeed;
     this.goal = goal;
   }
@@ -359,27 +370,31 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return this.currentLaneIndex;
   };
   DriverBehavioralState.prototype.component3 = function () {
-    return this.maximumSpeed;
+    return this.leaders;
   };
   DriverBehavioralState.prototype.component4 = function () {
+    return this.maximumSpeed;
+  };
+  DriverBehavioralState.prototype.component5 = function () {
     return this.goal;
   };
-  DriverBehavioralState.prototype.copy_eo2ftl$ = function (currentRoad, currentLaneIndex, maximumSpeed, goal) {
-    return new DriverBehavioralState(currentRoad === void 0 ? this.currentRoad : currentRoad, currentLaneIndex === void 0 ? this.currentLaneIndex : currentLaneIndex, maximumSpeed === void 0 ? this.maximumSpeed : maximumSpeed, goal === void 0 ? this.goal : goal);
+  DriverBehavioralState.prototype.copy_2mq88z$ = function (currentRoad, currentLaneIndex, leaders, maximumSpeed, goal) {
+    return new DriverBehavioralState(currentRoad === void 0 ? this.currentRoad : currentRoad, currentLaneIndex === void 0 ? this.currentLaneIndex : currentLaneIndex, leaders === void 0 ? this.leaders : leaders, maximumSpeed === void 0 ? this.maximumSpeed : maximumSpeed, goal === void 0 ? this.goal : goal);
   };
   DriverBehavioralState.prototype.toString = function () {
-    return 'DriverBehavioralState(currentRoad=' + Kotlin.toString(this.currentRoad) + (', currentLaneIndex=' + Kotlin.toString(this.currentLaneIndex)) + (', maximumSpeed=' + Kotlin.toString(this.maximumSpeed)) + (', goal=' + Kotlin.toString(this.goal)) + ')';
+    return 'DriverBehavioralState(currentRoad=' + Kotlin.toString(this.currentRoad) + (', currentLaneIndex=' + Kotlin.toString(this.currentLaneIndex)) + (', leaders=' + Kotlin.toString(this.leaders)) + (', maximumSpeed=' + Kotlin.toString(this.maximumSpeed)) + (', goal=' + Kotlin.toString(this.goal)) + ')';
   };
   DriverBehavioralState.prototype.hashCode = function () {
     var result = 0;
     result = result * 31 + Kotlin.hashCode(this.currentRoad) | 0;
     result = result * 31 + Kotlin.hashCode(this.currentLaneIndex) | 0;
+    result = result * 31 + Kotlin.hashCode(this.leaders) | 0;
     result = result * 31 + Kotlin.hashCode(this.maximumSpeed) | 0;
     result = result * 31 + Kotlin.hashCode(this.goal) | 0;
     return result;
   };
   DriverBehavioralState.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.currentRoad, other.currentRoad) && Kotlin.equals(this.currentLaneIndex, other.currentLaneIndex) && Kotlin.equals(this.maximumSpeed, other.maximumSpeed) && Kotlin.equals(this.goal, other.goal)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.currentRoad, other.currentRoad) && Kotlin.equals(this.currentLaneIndex, other.currentLaneIndex) && Kotlin.equals(this.leaders, other.leaders) && Kotlin.equals(this.maximumSpeed, other.maximumSpeed) && Kotlin.equals(this.goal, other.goal)))));
   };
   function lombardLateralControl(angleError, lateralError, left, velocity, reactionTime, curvature, lookAheadDistance, wheelBase) {
     var targetPointDistance = velocity * 2.0 * reactionTime;
@@ -422,11 +437,31 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var x = gain * lateralError / velocity;
     return angleError + Math_0.atan(x);
   }
+  function intelligentDriverModelControl(intervehicularDistance, velocity, relativeVelocity, desiredVelocity, maximumAcceleration, comfortableBrakingDeceleration, minimumSpacing, desiredHeadwayTime, aggressivenessExponent) {
+    if (maximumAcceleration === void 0)
+      maximumAcceleration = 2.0;
+    if (comfortableBrakingDeceleration === void 0)
+      comfortableBrakingDeceleration = 4.0;
+    if (minimumSpacing === void 0)
+      minimumSpacing = 2.0;
+    if (desiredHeadwayTime === void 0)
+      desiredHeadwayTime = 2.0;
+    if (aggressivenessExponent === void 0)
+      aggressivenessExponent = 4.0;
+    var tmp$ = minimumSpacing + velocity * desiredHeadwayTime;
+    var tmp$_0 = velocity * relativeVelocity;
+    var x = maximumAcceleration * comfortableBrakingDeceleration;
+    var sStar = tmp$ + tmp$_0 / (2.0 * Math_0.sqrt(x));
+    var $receiver = velocity / desiredVelocity;
+    var tmp$_1 = 1.0 - Math_0.pow($receiver, aggressivenessExponent);
+    var $receiver_0 = sStar / intervehicularDistance;
+    return maximumAcceleration * (tmp$_1 - Math_0.pow($receiver_0, 2));
+  }
   function ReachGoalBehavior(vehicle, driverBehavioralState, longitudinalControl, lateralControl) {
     ReachGoalBehavior$Companion_getInstance();
     if (longitudinalControl === void 0)
-      longitudinalControl = getCallableRef('defaultLongitudinalControl', function ($receiver, driverBehavioralState, vehicle) {
-        return $receiver.defaultLongitudinalControl_hh9uo6$(driverBehavioralState, vehicle);
+      longitudinalControl = getCallableRef('idmLongitudinalControl', function ($receiver, driverBehavioralState, vehicle) {
+        return $receiver.idmLongitudinalControl_hh9uo6$(driverBehavioralState, vehicle);
       }.bind(null, ReachGoalBehavior$Companion_getInstance()));
     if (lateralControl === void 0)
       lateralControl = getCallableRef('curvatureFollowingLateralControl', function ($receiver, driverBehavioralState, vehicle) {
@@ -498,8 +533,39 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var b_0 = vehicle.velocity.norm * 2.0;
     return lombardLateralControl(angleError, lateralError, left, tmp$, 0.1, curvature, Math_0.max(2.0, b_0), vehicle.wheelBase);
   };
-  ReachGoalBehavior$Companion.prototype.defaultLongitudinalControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
+  ReachGoalBehavior$Companion.prototype.constantSpeedControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
     return 0.0;
+  };
+  ReachGoalBehavior$Companion.prototype.idmLongitudinalControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
+    var $receiver = driverBehavioralState.leaders;
+    var minBy$result;
+    minBy$break: do {
+      var iterator = $receiver.iterator();
+      if (!iterator.hasNext()) {
+        minBy$result = null;
+        break minBy$break;
+      }var minElem = iterator.next();
+      if (!iterator.hasNext()) {
+        minBy$result = minElem;
+        break minBy$break;
+      }var minValue = minElem.position.distance_8a09bi$(vehicle.position);
+      do {
+        var e = iterator.next();
+        var v = e.position.distance_8a09bi$(vehicle.position);
+        if (Kotlin.compareTo(minValue, v) > 0) {
+          minElem = e;
+          minValue = v;
+        }}
+       while (iterator.hasNext());
+      minBy$result = minElem;
+    }
+     while (false);
+    var closestLeader = minBy$result;
+    if (closestLeader == null) {
+      return intelligentDriverModelControl(kotlin_js_internal_DoubleCompanionObject.MAX_VALUE, vehicle.velocity.norm, 0.0, driverBehavioralState.maximumSpeed);
+    } else {
+      return intelligentDriverModelControl(closestLeader.position.distance_8a09bi$(vehicle.position), vehicle.velocity.norm, closestLeader.velocity.norm - vehicle.velocity.norm, driverBehavioralState.maximumSpeed);
+    }
   };
   ReachGoalBehavior$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
   var ReachGoalBehavior$Companion_instance = null;
@@ -511,8 +577,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   ReachGoalBehavior.$metadata$ = {kind: Kind_CLASS, simpleName: 'ReachGoalBehavior', interfaces: []};
   function reachGoalBehavior($receiver, driverBehavioralState, longitudinalControl, lateralControl) {
     if (longitudinalControl === void 0)
-      longitudinalControl = getCallableRef('defaultLongitudinalControl', function ($receiver, driverBehavioralState, vehicle) {
-        return $receiver.defaultLongitudinalControl_hh9uo6$(driverBehavioralState, vehicle);
+      longitudinalControl = getCallableRef('idmLongitudinalControl', function ($receiver, driverBehavioralState, vehicle) {
+        return $receiver.idmLongitudinalControl_hh9uo6$(driverBehavioralState, vehicle);
       }.bind(null, ReachGoalBehavior$Companion_getInstance()));
     if (lateralControl === void 0)
       lateralControl = getCallableRef('curvatureFollowingLateralControl', function ($receiver, driverBehavioralState, vehicle) {
@@ -531,6 +597,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   package$lateral.lombardLateralControl_3v5prj$ = lombardLateralControl;
   package$lateral.purePursuit_7v0duu$ = purePursuit;
   package$lateral.stanleyLateralControl_6y0v78$ = stanleyLateralControl;
+  var package$longitudinal = package$behavior.longitudinal || (package$behavior.longitudinal = {});
+  package$longitudinal.intelligentDriverModelControl_g0y5u6$ = intelligentDriverModelControl;
   Object.defineProperty(ReachGoalBehavior, 'Companion', {get: ReachGoalBehavior$Companion_getInstance});
   package$behavior.ReachGoalBehavior = ReachGoalBehavior;
   package$behavior.reachGoalBehavior_pdvrc7$ = reachGoalBehavior;
@@ -550,24 +618,29 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
   if (true)
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js"), __webpack_require__(/*! math */ "./kotlin-dce/math.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js"), __webpack_require__(/*! math */ "./kotlin-dce/math.js"), __webpack_require__(/*! utils */ "./kotlin-dce/utils.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
 				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
 				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   else {}
-}(this, function (_, Kotlin, $module$math) {
+}(this, function (_, Kotlin, $module$math, $module$utils) {
   'use strict';
   var Vector2D_init = $module$math.fr.ciadlab.sim.math.geometry.Vector2D_init_9weutc$;
   var math = Kotlin.kotlin.math;
   var Vector2D = $module$math.fr.ciadlab.sim.math.geometry.Vector2D;
+  var UUID = $module$utils.fr.ciadlab.sim.utils.UUID;
   var lazy = Kotlin.kotlin.lazy_klfg04$;
   var Kind_CLASS = Kotlin.Kind.CLASS;
   var Random = Kotlin.kotlin.random.Random;
   var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var Math_0 = Math;
-  function Vehicle(position, velocity, acceleration, direction, wheelAngle, wheelBase, length, wheelAngleLimit, onUpdate) {
+  function Vehicle(position, velocity, acceleration, direction, wheelAngle, wheelBase, length, wheelAngleLimit, lastCommand, identifier, onUpdate) {
     if (wheelAngleLimit === void 0)
       wheelAngleLimit = 15.0 / 180.0 * math.PI;
+    if (lastCommand === void 0)
+      lastCommand = null;
+    if (identifier === void 0)
+      identifier = UUID.Companion.randomUUID();
     if (onUpdate === void 0) {
       onUpdate = ArrayList_init();
     }this.position = position;
@@ -578,21 +651,30 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.wheelBase = wheelBase;
     this.length = length;
     this.wheelAngleLimit = wheelAngleLimit;
+    this.lastCommand = lastCommand;
+    this.identifier = identifier;
     this.onUpdate = onUpdate;
     this.yaw_6bxx3i$_0 = lazy(Vehicle$yaw$lambda(this));
   }
   Object.defineProperty(Vehicle.prototype, 'yaw', {get: function () {
     return this.yaw_6bxx3i$_0.value;
   }});
+  Vehicle.prototype.update_8a38bu$ = function (vehicleCommand, deltaTime) {
+    return this.update_yvo9jy$(vehicleCommand.acceleration, vehicleCommand.wheelAngle, deltaTime);
+  };
+  Vehicle.prototype.changeSpeed_14dthe$ = function (newSpeed) {
+    return this.copy_x23i26$(void 0, this.direction.normalize().times_14dthe$(newSpeed));
+  };
   Vehicle.prototype.update_yvo9jy$ = function (acceleration, wheelAngle, deltaTime) {
+    var tmp$;
     var y = this.velocity.y;
     var x = this.velocity.x;
     var direction = Math_0.atan2(y, x);
     var newSpeed = this.velocity.norm + this.acceleration * deltaTime;
     var traveledDistance = this.velocity.norm * deltaTime + 0.5 * this.acceleration * (deltaTime * deltaTime);
-    var tmp$ = this.wheelBase;
+    var tmp$_0 = this.wheelBase;
     var x_0 = -this.wheelAngle;
-    var radius = tmp$ / Math_0.tan(x_0);
+    var radius = tmp$_0 / Math_0.tan(x_0);
     var newPosition;
     var newDirectionVector;
     var newVelocity;
@@ -612,17 +694,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       var dy = this.position.y - center.y;
       newPosition = new Vector2D(dx * Math_0.cos(centralAngle) - dy * Math_0.sin(centralAngle) + center.x, dx * Math_0.sin(centralAngle) + dy * Math_0.cos(centralAngle) + center.y);
     }
-    var tmp$_0 = newPosition;
-    var tmp$_1 = newVelocity;
-    var tmp$_2 = newDirectionVector;
-    var tmp$_3 = -this.wheelAngleLimit;
+    tmp$ = new VehicleCommand(acceleration, wheelAngle);
+    var tmp$_1 = -this.wheelAngleLimit;
     var a = this.wheelAngleLimit;
     var b = Math_0.min(a, wheelAngle);
-    var updatedVehicle = this.copy_cz5p3k$(tmp$_0, tmp$_1, acceleration, tmp$_2, Math_0.max(tmp$_3, b));
-    var tmp$_4;
-    tmp$_4 = this.onUpdate.iterator();
-    while (tmp$_4.hasNext()) {
-      var element = tmp$_4.next();
+    var updatedVehicle = this.copy_x23i26$(newPosition, newVelocity, acceleration, newDirectionVector, Math_0.max(tmp$_1, b), void 0, void 0, void 0, tmp$);
+    var tmp$_2;
+    tmp$_2 = this.onUpdate.iterator();
+    while (tmp$_2.hasNext()) {
+      var element = tmp$_2.next();
       element(updatedVehicle);
     }
     return updatedVehicle;
@@ -660,13 +740,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     return this.wheelAngleLimit;
   };
   Vehicle.prototype.component9 = function () {
+    return this.lastCommand;
+  };
+  Vehicle.prototype.component10 = function () {
+    return this.identifier;
+  };
+  Vehicle.prototype.component11 = function () {
     return this.onUpdate;
   };
-  Vehicle.prototype.copy_cz5p3k$ = function (position, velocity, acceleration, direction, wheelAngle, wheelBase, length, wheelAngleLimit, onUpdate) {
-    return new Vehicle(position === void 0 ? this.position : position, velocity === void 0 ? this.velocity : velocity, acceleration === void 0 ? this.acceleration : acceleration, direction === void 0 ? this.direction : direction, wheelAngle === void 0 ? this.wheelAngle : wheelAngle, wheelBase === void 0 ? this.wheelBase : wheelBase, length === void 0 ? this.length : length, wheelAngleLimit === void 0 ? this.wheelAngleLimit : wheelAngleLimit, onUpdate === void 0 ? this.onUpdate : onUpdate);
+  Vehicle.prototype.copy_x23i26$ = function (position, velocity, acceleration, direction, wheelAngle, wheelBase, length, wheelAngleLimit, lastCommand, identifier, onUpdate) {
+    return new Vehicle(position === void 0 ? this.position : position, velocity === void 0 ? this.velocity : velocity, acceleration === void 0 ? this.acceleration : acceleration, direction === void 0 ? this.direction : direction, wheelAngle === void 0 ? this.wheelAngle : wheelAngle, wheelBase === void 0 ? this.wheelBase : wheelBase, length === void 0 ? this.length : length, wheelAngleLimit === void 0 ? this.wheelAngleLimit : wheelAngleLimit, lastCommand === void 0 ? this.lastCommand : lastCommand, identifier === void 0 ? this.identifier : identifier, onUpdate === void 0 ? this.onUpdate : onUpdate);
   };
   Vehicle.prototype.toString = function () {
-    return 'Vehicle(position=' + Kotlin.toString(this.position) + (', velocity=' + Kotlin.toString(this.velocity)) + (', acceleration=' + Kotlin.toString(this.acceleration)) + (', direction=' + Kotlin.toString(this.direction)) + (', wheelAngle=' + Kotlin.toString(this.wheelAngle)) + (', wheelBase=' + Kotlin.toString(this.wheelBase)) + (', length=' + Kotlin.toString(this.length)) + (', wheelAngleLimit=' + Kotlin.toString(this.wheelAngleLimit)) + (', onUpdate=' + Kotlin.toString(this.onUpdate)) + ')';
+    return 'Vehicle(position=' + Kotlin.toString(this.position) + (', velocity=' + Kotlin.toString(this.velocity)) + (', acceleration=' + Kotlin.toString(this.acceleration)) + (', direction=' + Kotlin.toString(this.direction)) + (', wheelAngle=' + Kotlin.toString(this.wheelAngle)) + (', wheelBase=' + Kotlin.toString(this.wheelBase)) + (', length=' + Kotlin.toString(this.length)) + (', wheelAngleLimit=' + Kotlin.toString(this.wheelAngleLimit)) + (', lastCommand=' + Kotlin.toString(this.lastCommand)) + (', identifier=' + Kotlin.toString(this.identifier)) + (', onUpdate=' + Kotlin.toString(this.onUpdate)) + ')';
   };
   Vehicle.prototype.hashCode = function () {
     var result = 0;
@@ -678,29 +764,58 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     result = result * 31 + Kotlin.hashCode(this.wheelBase) | 0;
     result = result * 31 + Kotlin.hashCode(this.length) | 0;
     result = result * 31 + Kotlin.hashCode(this.wheelAngleLimit) | 0;
+    result = result * 31 + Kotlin.hashCode(this.lastCommand) | 0;
+    result = result * 31 + Kotlin.hashCode(this.identifier) | 0;
     result = result * 31 + Kotlin.hashCode(this.onUpdate) | 0;
     return result;
   };
   Vehicle.prototype.equals = function (other) {
-    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.position, other.position) && Kotlin.equals(this.velocity, other.velocity) && Kotlin.equals(this.acceleration, other.acceleration) && Kotlin.equals(this.direction, other.direction) && Kotlin.equals(this.wheelAngle, other.wheelAngle) && Kotlin.equals(this.wheelBase, other.wheelBase) && Kotlin.equals(this.length, other.length) && Kotlin.equals(this.wheelAngleLimit, other.wheelAngleLimit) && Kotlin.equals(this.onUpdate, other.onUpdate)))));
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.position, other.position) && Kotlin.equals(this.velocity, other.velocity) && Kotlin.equals(this.acceleration, other.acceleration) && Kotlin.equals(this.direction, other.direction) && Kotlin.equals(this.wheelAngle, other.wheelAngle) && Kotlin.equals(this.wheelBase, other.wheelBase) && Kotlin.equals(this.length, other.length) && Kotlin.equals(this.wheelAngleLimit, other.wheelAngleLimit) && Kotlin.equals(this.lastCommand, other.lastCommand) && Kotlin.equals(this.identifier, other.identifier) && Kotlin.equals(this.onUpdate, other.onUpdate)))));
+  };
+  function VehicleCommand(acceleration, wheelAngle) {
+    this.acceleration = acceleration;
+    this.wheelAngle = wheelAngle;
+  }
+  VehicleCommand.$metadata$ = {kind: Kind_CLASS, simpleName: 'VehicleCommand', interfaces: []};
+  VehicleCommand.prototype.component1 = function () {
+    return this.acceleration;
+  };
+  VehicleCommand.prototype.component2 = function () {
+    return this.wheelAngle;
+  };
+  VehicleCommand.prototype.copy_lu1900$ = function (acceleration, wheelAngle) {
+    return new VehicleCommand(acceleration === void 0 ? this.acceleration : acceleration, wheelAngle === void 0 ? this.wheelAngle : wheelAngle);
+  };
+  VehicleCommand.prototype.toString = function () {
+    return 'VehicleCommand(acceleration=' + Kotlin.toString(this.acceleration) + (', wheelAngle=' + Kotlin.toString(this.wheelAngle)) + ')';
+  };
+  VehicleCommand.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.acceleration) | 0;
+    result = result * 31 + Kotlin.hashCode(this.wheelAngle) | 0;
+    return result;
+  };
+  VehicleCommand.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.acceleration, other.acceleration) && Kotlin.equals(this.wheelAngle, other.wheelAngle)))));
   };
   function withSimulatedPositionError($receiver, errorRadius) {
     if (errorRadius === void 0)
       errorRadius = 0.1;
     var alpha = Random.Default.nextDouble_14dthe$(2 * math.PI);
-    return $receiver.copy_cz5p3k$($receiver.position.plus_8a09bi$((new Vector2D(Math_0.cos(alpha), Math_0.sin(alpha))).times_14dthe$(errorRadius)));
+    return $receiver.copy_x23i26$($receiver.position.plus_8a09bi$((new Vector2D(Math_0.cos(alpha), Math_0.sin(alpha))).times_14dthe$(errorRadius)));
   }
   function withSimulatedDirectionError($receiver, errorAngleLimit) {
     if (errorAngleLimit === void 0)
       errorAngleLimit = 0.1;
     var erroneousDirection = $receiver.direction.rotate_14dthe$(Random.Default.nextDouble_lu1900$(-errorAngleLimit, errorAngleLimit));
-    return $receiver.copy_cz5p3k$(void 0, Vector2D_init($receiver.velocity.norm, erroneousDirection), void 0, erroneousDirection);
+    return $receiver.copy_x23i26$(void 0, Vector2D_init($receiver.velocity.norm, erroneousDirection), void 0, erroneousDirection);
   }
   var package$fr = _.fr || (_.fr = {});
   var package$ciadlab = package$fr.ciadlab || (package$fr.ciadlab = {});
   var package$sim = package$ciadlab.sim || (package$ciadlab.sim = {});
   var package$vehicle = package$sim.vehicle || (package$sim.vehicle = {});
   package$vehicle.Vehicle = Vehicle;
+  package$vehicle.VehicleCommand = VehicleCommand;
   package$vehicle.withSimulatedPositionError_yrgvwq$ = withSimulatedPositionError;
   package$vehicle.withSimulatedDirectionError_yrgvwq$ = withSimulatedDirectionError;
   return _;
@@ -2470,6 +2585,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     IndexOutOfBoundsException.prototype.constructor = IndexOutOfBoundsException;
     UnsupportedOperationException.prototype = Object.create(RuntimeException.prototype);
     UnsupportedOperationException.prototype.constructor = UnsupportedOperationException;
+    NumberFormatException.prototype = Object.create(IllegalArgumentException.prototype);
+    NumberFormatException.prototype.constructor = NumberFormatException;
     NullPointerException.prototype = Object.create(RuntimeException.prototype);
     NullPointerException.prototype.constructor = NullPointerException;
     ClassCastException.prototype = Object.create(RuntimeException.prototype);
@@ -2555,6 +2672,31 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if ($receiver.isEmpty())
         throw new NoSuchElementException('List is empty.');
       return $receiver.get_za3lpa$(get_lastIndex_12($receiver));
+    }
+    function single_17($receiver) {
+      if (Kotlin.isType($receiver, List))
+        return single_18($receiver);
+      else {
+        var iterator = $receiver.iterator();
+        if (!iterator.hasNext())
+          throw new NoSuchElementException('Collection is empty.');
+        var single = iterator.next();
+        if (iterator.hasNext())
+          throw IllegalArgumentException_init_0('Collection has more than one element.');
+        return single;
+      }
+    }
+    function single_18($receiver) {
+      var tmp$;
+      switch ($receiver.size) {
+        case 0:
+          throw new NoSuchElementException('List is empty.');
+        case 1:
+          tmp$ = $receiver.get_za3lpa$(0);
+          break;
+        default:throw IllegalArgumentException_init_0('List has more than one element.');
+      }
+      return tmp$;
     }
     function toDoubleArray_0($receiver) {
       var tmp$, tmp$_0;
@@ -2646,6 +2788,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         transform = null;
       return joinTo_8($receiver, StringBuilder_init_1(), separator, prefix, postfix, limit, truncated, transform).toString();
     }
+    function downTo_4($receiver, to) {
+      return IntProgression$Companion_getInstance().fromClosedRange_qt1dr2$($receiver, to, -1);
+    }
     function reversed_9($receiver) {
       return IntProgression$Companion_getInstance().fromClosedRange_qt1dr2$($receiver.last, $receiver.first, -$receiver.step | 0);
     }
@@ -2657,6 +2802,36 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       if (to <= -2147483648)
         return IntRange$Companion_getInstance().EMPTY;
       return new IntRange($receiver, to - 1 | 0);
+    }
+    function coerceAtLeast_2($receiver, minimumValue) {
+      return $receiver < minimumValue ? minimumValue : $receiver;
+    }
+    function coerceAtMost_2($receiver, maximumValue) {
+      return $receiver > maximumValue ? maximumValue : $receiver;
+    }
+    function coerceIn_2($receiver, minimumValue, maximumValue) {
+      if (minimumValue > maximumValue)
+        throw IllegalArgumentException_init_0('Cannot coerce value to an empty range: maximum ' + maximumValue + ' is less than minimum ' + minimumValue + '.');
+      if ($receiver < minimumValue)
+        return minimumValue;
+      if ($receiver > maximumValue)
+        return maximumValue;
+      return $receiver;
+    }
+    function Iterable$ObjectLiteral_0(closure$iterator) {
+      this.closure$iterator = closure$iterator;
+    }
+    Iterable$ObjectLiteral_0.prototype.iterator = function () {
+      return this.closure$iterator();
+    };
+    Iterable$ObjectLiteral_0.$metadata$ = {kind: Kind_CLASS, interfaces: [Iterable]};
+    function asIterable$lambda_8(this$asIterable) {
+      return function () {
+        return this$asIterable.iterator();
+      };
+    }
+    function asIterable_10($receiver) {
+      return new Iterable$ObjectLiteral_0(asIterable$lambda_8($receiver));
     }
     var PI;
     var E;
@@ -3393,6 +3568,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     function longArrayIterator(array) {
       return new longArrayIterator$ObjectLiteral(array);
     }
+    function subSequence(c, startIndex, endIndex) {
+      if (typeof c === 'string') {
+        return c.substring(startIndex, endIndex);
+      } else {
+        return c.subSequence_vux9f0$(startIndex, endIndex);
+      }
+    }
     function captureStack(baseClass, instance) {
       if (Error.captureStackTrace) {
         Error.captureStackTrace(instance, get_js(Kotlin.getKClassFromExpression(instance)));
@@ -3523,6 +3705,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
     function lazy(initializer) {
       return new UnsafeLazyImpl(initializer);
+    }
+    function toString_0($receiver, radix) {
+      return $receiver.toString(checkRadix(radix));
     }
     function asList($receiver) {
       return new ArrayList($receiver);
@@ -4871,6 +5056,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       UnsupportedOperationException.call($this, message, null);
       return $this;
     }
+    function NumberFormatException(message) {
+      IllegalArgumentException_init_0(message, this);
+      this.name = 'NumberFormatException';
+    }
+    NumberFormatException.$metadata$ = {kind: Kind_CLASS, simpleName: 'NumberFormatException', interfaces: [IllegalArgumentException]};
     function NullPointerException(message) {
       RuntimeException_init_0(message, this);
       this.name = 'NullPointerException';
@@ -5452,6 +5642,28 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     function isLowSurrogate($receiver) {
       return (new CharRange(kotlin_js_internal_CharCompanionObject.MIN_LOW_SURROGATE, kotlin_js_internal_CharCompanionObject.MAX_LOW_SURROGATE)).contains_mef7kx$($receiver);
     }
+    function toLong($receiver) {
+      var tmp$;
+      return (tmp$ = toLongOrNull($receiver)) != null ? tmp$ : numberFormatError($receiver);
+    }
+    function checkRadix(radix) {
+      if (!(2 <= radix && radix <= 36)) {
+        throw IllegalArgumentException_init_0('radix ' + radix + ' was not in valid range 2..36');
+      }return radix;
+    }
+    function digitOf(char, radix) {
+      var tmp$;
+      if (char >= 48 && char <= 57)
+        tmp$ = char - 48;
+      else if (char >= 65 && char <= 90)
+        tmp$ = char - 65 + 10 | 0;
+      else if (char >= 97 && char <= 122)
+        tmp$ = char - 97 + 10 | 0;
+      else
+        tmp$ = -1;
+      var it = tmp$;
+      return it >= radix ? -1 : it;
+    }
     var RegexOption$IGNORE_CASE_instance;
     var RegexOption$MULTILINE_instance;
     var Regex$Companion_instance = null;
@@ -5518,6 +5730,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return compareTo(a, b, true);
     }
     var STRING_CASE_INSENSITIVE_ORDER;
+    function regionMatches($receiver, thisOffset, other, otherOffset, length, ignoreCase) {
+      if (ignoreCase === void 0)
+        ignoreCase = false;
+      return regionMatchesImpl($receiver, thisOffset, other, otherOffset, length, ignoreCase);
+    }
     var MAX_BYTES_PER_CHAR;
     var REPLACEMENT_BYTE_SEQUENCE;
     var REPLACEMENT_CHAR;
@@ -6122,6 +6339,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         return false;
       }
     }
+    function Sequence() {
+    }
+    Sequence.$metadata$ = {kind: Kind_INTERFACE, simpleName: 'Sequence', interfaces: []};
     var State_NotReady;
     var State_ManyNotReady;
     var State_ManyReady;
@@ -6716,8 +6936,292 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       else
         $receiver.append_gw00v9$(toString(element));
     }
+    function equals_1($receiver, other, ignoreCase) {
+      if (ignoreCase === void 0)
+        ignoreCase = false;
+      if ($receiver === other)
+        return true;
+      if (!ignoreCase)
+        return false;
+      if (toChar(String.fromCharCode($receiver | 0).toUpperCase().charCodeAt(0)) === toChar(String.fromCharCode(other | 0).toUpperCase().charCodeAt(0)))
+        return true;
+      if (toChar(String.fromCharCode($receiver | 0).toLowerCase().charCodeAt(0)) === toChar(String.fromCharCode(other | 0).toLowerCase().charCodeAt(0)))
+        return true;
+      return false;
+    }
+    function toLongOrNull($receiver) {
+      return toLongOrNull_0($receiver, 10);
+    }
+    function toLongOrNull_0($receiver, radix) {
+      checkRadix(radix);
+      var length = $receiver.length;
+      if (length === 0)
+        return null;
+      var start;
+      var isNegative;
+      var limit;
+      var firstChar = $receiver.charCodeAt(0);
+      if (firstChar < 48) {
+        if (length === 1)
+          return null;
+        start = 1;
+        if (firstChar === 45) {
+          isNegative = true;
+          limit = Long$Companion$MIN_VALUE;
+        } else if (firstChar === 43) {
+          isNegative = false;
+          limit = L_9223372036854775807;
+        } else
+          return null;
+      } else {
+        start = 0;
+        isNegative = false;
+        limit = L_9223372036854775807;
+      }
+      var limitForMaxRadix = L_256204778801521550;
+      var limitBeforeMul = limitForMaxRadix;
+      var result = L0;
+      for (var i = start; i < length; i++) {
+        var digit = digitOf($receiver.charCodeAt(i), radix);
+        if (digit < 0)
+          return null;
+        if (result.compareTo_11rb$(limitBeforeMul) < 0) {
+          if (equals(limitBeforeMul, limitForMaxRadix)) {
+            limitBeforeMul = limit.div(Kotlin.Long.fromInt(radix));
+            if (result.compareTo_11rb$(limitBeforeMul) < 0) {
+              return null;
+            }} else {
+            return null;
+          }
+        }result = result.multiply(Kotlin.Long.fromInt(radix));
+        if (result.compareTo_11rb$(limit.add(Kotlin.Long.fromInt(digit))) < 0)
+          return null;
+        result = result.subtract(Kotlin.Long.fromInt(digit));
+      }
+      return isNegative ? result : result.unaryMinus();
+    }
+    function numberFormatError(input) {
+      throw new NumberFormatException("Invalid number format: '" + input + "'");
+    }
     function get_lastIndex_13($receiver) {
       return $receiver.length - 1 | 0;
+    }
+    function substring_3($receiver, range) {
+      return Kotlin.subSequence($receiver, range.start, range.endInclusive + 1 | 0).toString();
+    }
+    function regionMatchesImpl($receiver, thisOffset, other, otherOffset, length, ignoreCase) {
+      if (otherOffset < 0 || thisOffset < 0 || thisOffset > ($receiver.length - length | 0) || otherOffset > (other.length - length | 0)) {
+        return false;
+      }for (var index = 0; index < length; index++) {
+        if (!equals_1($receiver.charCodeAt(thisOffset + index | 0), other.charCodeAt(otherOffset + index | 0), ignoreCase))
+          return false;
+      }
+      return true;
+    }
+    function indexOf_15($receiver, other, startIndex, endIndex, ignoreCase, last) {
+      if (last === void 0)
+        last = false;
+      var tmp$, tmp$_0;
+      var indices = !last ? new IntRange(coerceAtLeast_2(startIndex, 0), coerceAtMost_2(endIndex, $receiver.length)) : downTo_4(coerceAtMost_2(startIndex, get_lastIndex_13($receiver)), coerceAtLeast_2(endIndex, 0));
+      if (typeof $receiver === 'string' && typeof other === 'string') {
+        tmp$ = indices.iterator();
+        while (tmp$.hasNext()) {
+          var index = tmp$.next();
+          if (regionMatches(other, 0, $receiver, index, other.length, ignoreCase))
+            return index;
+        }
+      } else {
+        tmp$_0 = indices.iterator();
+        while (tmp$_0.hasNext()) {
+          var index_0 = tmp$_0.next();
+          if (regionMatchesImpl(other, 0, $receiver, index_0, other.length, ignoreCase))
+            return index_0;
+        }
+      }
+      return -1;
+    }
+    function findAnyOf($receiver, strings, startIndex, ignoreCase, last) {
+      var tmp$, tmp$_0;
+      if (!ignoreCase && strings.size === 1) {
+        var string = single_17(strings);
+        var index = !last ? indexOf_17($receiver, string, startIndex) : lastIndexOf_16($receiver, string, startIndex);
+        return index < 0 ? null : to(index, string);
+      }var indices = !last ? new IntRange(coerceAtLeast_2(startIndex, 0), $receiver.length) : downTo_4(coerceAtMost_2(startIndex, get_lastIndex_13($receiver)), 0);
+      if (typeof $receiver === 'string') {
+        tmp$ = indices.iterator();
+        loop_label: while (tmp$.hasNext()) {
+          var index_0 = tmp$.next();
+          var firstOrNull$result;
+          firstOrNull$break: do {
+            var tmp$_1;
+            tmp$_1 = strings.iterator();
+            while (tmp$_1.hasNext()) {
+              var element = tmp$_1.next();
+              if (regionMatches(element, 0, $receiver, index_0, element.length, ignoreCase)) {
+                firstOrNull$result = element;
+                break firstOrNull$break;
+              }}
+            firstOrNull$result = null;
+          }
+           while (false);
+          var matchingString = firstOrNull$result;
+          if (matchingString != null)
+            return to(index_0, matchingString);
+        }
+      } else {
+        tmp$_0 = indices.iterator();
+        loop_label: while (tmp$_0.hasNext()) {
+          var index_1 = tmp$_0.next();
+          var firstOrNull$result_0;
+          firstOrNull$break: do {
+            var tmp$_2;
+            tmp$_2 = strings.iterator();
+            while (tmp$_2.hasNext()) {
+              var element_0 = tmp$_2.next();
+              if (regionMatchesImpl(element_0, 0, $receiver, index_1, element_0.length, ignoreCase)) {
+                firstOrNull$result_0 = element_0;
+                break firstOrNull$break;
+              }}
+            firstOrNull$result_0 = null;
+          }
+           while (false);
+          var matchingString_0 = firstOrNull$result_0;
+          if (matchingString_0 != null)
+            return to(index_1, matchingString_0);
+        }
+      }
+      return null;
+    }
+    function indexOf_17($receiver, string, startIndex, ignoreCase) {
+      if (startIndex === void 0)
+        startIndex = 0;
+      if (ignoreCase === void 0)
+        ignoreCase = false;
+      return ignoreCase || !(typeof $receiver === 'string') ? indexOf_15($receiver, string, startIndex, $receiver.length, ignoreCase) : $receiver.indexOf(string, startIndex);
+    }
+    function lastIndexOf_16($receiver, string, startIndex, ignoreCase) {
+      if (startIndex === void 0)
+        startIndex = get_lastIndex_13($receiver);
+      if (ignoreCase === void 0)
+        ignoreCase = false;
+      return ignoreCase || !(typeof $receiver === 'string') ? indexOf_15($receiver, string, startIndex, 0, ignoreCase, true) : $receiver.lastIndexOf(string, startIndex);
+    }
+    function DelimitedRangesSequence(input, startIndex, limit, getNextMatch) {
+      this.input_0 = input;
+      this.startIndex_0 = startIndex;
+      this.limit_0 = limit;
+      this.getNextMatch_0 = getNextMatch;
+    }
+    function DelimitedRangesSequence$iterator$ObjectLiteral(this$DelimitedRangesSequence) {
+      this.this$DelimitedRangesSequence = this$DelimitedRangesSequence;
+      this.nextState = -1;
+      this.currentStartIndex = coerceIn_2(this$DelimitedRangesSequence.startIndex_0, 0, this$DelimitedRangesSequence.input_0.length);
+      this.nextSearchIndex = this.currentStartIndex;
+      this.nextItem = null;
+      this.counter = 0;
+    }
+    DelimitedRangesSequence$iterator$ObjectLiteral.prototype.calcNext_0 = function () {
+      if (this.nextSearchIndex < 0) {
+        this.nextState = 0;
+        this.nextItem = null;
+      } else {
+        if (this.this$DelimitedRangesSequence.limit_0 > 0 && (this.counter = this.counter + 1 | 0, this.counter) >= this.this$DelimitedRangesSequence.limit_0 || this.nextSearchIndex > this.this$DelimitedRangesSequence.input_0.length) {
+          this.nextItem = new IntRange(this.currentStartIndex, get_lastIndex_13(this.this$DelimitedRangesSequence.input_0));
+          this.nextSearchIndex = -1;
+        } else {
+          var match = this.this$DelimitedRangesSequence.getNextMatch_0(this.this$DelimitedRangesSequence.input_0, this.nextSearchIndex);
+          if (match == null) {
+            this.nextItem = new IntRange(this.currentStartIndex, get_lastIndex_13(this.this$DelimitedRangesSequence.input_0));
+            this.nextSearchIndex = -1;
+          } else {
+            var index = match.component1(), length = match.component2();
+            this.nextItem = until_4(this.currentStartIndex, index);
+            this.currentStartIndex = index + length | 0;
+            this.nextSearchIndex = this.currentStartIndex + (length === 0 ? 1 : 0) | 0;
+          }
+        }
+        this.nextState = 1;
+      }
+    };
+    DelimitedRangesSequence$iterator$ObjectLiteral.prototype.next = function () {
+      var tmp$;
+      if (this.nextState === -1)
+        this.calcNext_0();
+      if (this.nextState === 0)
+        throw NoSuchElementException_init();
+      var result = Kotlin.isType(tmp$ = this.nextItem, IntRange) ? tmp$ : throwCCE_0();
+      this.nextItem = null;
+      this.nextState = -1;
+      return result;
+    };
+    DelimitedRangesSequence$iterator$ObjectLiteral.prototype.hasNext = function () {
+      if (this.nextState === -1)
+        this.calcNext_0();
+      return this.nextState === 1;
+    };
+    DelimitedRangesSequence$iterator$ObjectLiteral.$metadata$ = {kind: Kind_CLASS, interfaces: [Iterator]};
+    DelimitedRangesSequence.prototype.iterator = function () {
+      return new DelimitedRangesSequence$iterator$ObjectLiteral(this);
+    };
+    DelimitedRangesSequence.$metadata$ = {kind: Kind_CLASS, simpleName: 'DelimitedRangesSequence', interfaces: [Sequence]};
+    function rangesDelimitedBy$lambda_0(closure$delimitersList, closure$ignoreCase) {
+      return function ($receiver, currentIndex) {
+        var tmp$;
+        return (tmp$ = findAnyOf($receiver, closure$delimitersList, currentIndex, closure$ignoreCase, false)) != null ? to(tmp$.first, tmp$.second.length) : null;
+      };
+    }
+    function rangesDelimitedBy_0($receiver, delimiters, startIndex, ignoreCase, limit) {
+      if (startIndex === void 0)
+        startIndex = 0;
+      if (ignoreCase === void 0)
+        ignoreCase = false;
+      if (limit === void 0)
+        limit = 0;
+      if (!(limit >= 0)) {
+        var message = 'Limit must be non-negative, but was ' + limit + '.';
+        throw IllegalArgumentException_init_0(message.toString());
+      }var delimitersList = asList(delimiters);
+      return new DelimitedRangesSequence($receiver, startIndex, limit, rangesDelimitedBy$lambda_0(delimitersList, ignoreCase));
+    }
+    function split($receiver, delimiters, ignoreCase, limit) {
+      if (ignoreCase === void 0)
+        ignoreCase = false;
+      if (limit === void 0)
+        limit = 0;
+      if (delimiters.length === 1) {
+        var delimiter = delimiters[0];
+        if (!(delimiter.length === 0)) {
+          return split_1($receiver, delimiter, ignoreCase, limit);
+        }}var $receiver_0 = asIterable_10(rangesDelimitedBy_0($receiver, delimiters, void 0, ignoreCase, limit));
+      var destination = ArrayList_init_0(collectionSizeOrDefault($receiver_0, 10));
+      var tmp$;
+      tmp$ = $receiver_0.iterator();
+      while (tmp$.hasNext()) {
+        var item = tmp$.next();
+        destination.add_11rb$(substring_3($receiver, item));
+      }
+      return destination;
+    }
+    function split_1($receiver, delimiter, ignoreCase, limit) {
+      if (!(limit >= 0)) {
+        var message = 'Limit must be non-negative, but was ' + limit + '.';
+        throw IllegalArgumentException_init_0(message.toString());
+      }var currentOffset = 0;
+      var nextIndex = indexOf_17($receiver, delimiter, currentOffset, ignoreCase);
+      if (nextIndex === -1 || limit === 1) {
+        return listOf($receiver.toString());
+      }var isLimited = limit > 0;
+      var result = ArrayList_init_0(isLimited ? coerceAtMost_2(limit, 10) : 10);
+      do {
+        result.add_11rb$(Kotlin.subSequence($receiver, currentOffset, nextIndex).toString());
+        currentOffset = nextIndex + delimiter.length | 0;
+        if (isLimited && result.size === (limit - 1 | 0))
+          break;
+        nextIndex = indexOf_17($receiver, delimiter, currentOffset, ignoreCase);
+      }
+       while (nextIndex !== -1);
+      result.add_11rb$(Kotlin.subSequence($receiver, currentOffset, $receiver.length).toString());
+      return result;
     }
     var Typography_instance = null;
     var Duration$Companion_instance = null;
@@ -6895,6 +7399,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     Pair.prototype.equals = function (other) {
       return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.first, other.first) && Kotlin.equals(this.second, other.second)))));
     };
+    function to($receiver, that) {
+      return new Pair($receiver, that);
+    }
     var UByte$Companion_instance = null;
     var UInt$Companion_instance = null;
     var UIntRange$Companion_instance = null;
@@ -6919,6 +7426,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$kotlin.IllegalArgumentException_init_pdl1vj$ = IllegalArgumentException_init_0;
     package$collections.emptyList_287e2$ = emptyList;
     package$collections.ArrayList_init_287e2$ = ArrayList_init;
+    package$ranges.coerceAtLeast_dqglrj$ = coerceAtLeast_2;
     package$collections.addAll_ipc267$ = addAll;
     package$collections.LinkedHashMap_init_q3lmfv$ = LinkedHashMap_init;
     package$collections.ArrayList_init_ww73n8$ = ArrayList_init_0;
@@ -6929,6 +7437,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$collections.get_lastIndex_55thoc$ = get_lastIndex_12;
     package$collections.first_2p1efm$ = first_18;
     package$collections.last_2p1efm$ = last_18;
+    package$collections.single_7wnvza$ = single_17;
+    package$collections.single_2p1efm$ = single_18;
     package$collections.toList_7wnvza$ = toList_8;
     package$collections.sortWith_nqfjgj$ = sortWith_0;
     package$collections.toDoubleArray_tcduak$ = toDoubleArray_0;
@@ -6938,8 +7448,14 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$collections.Collection = Collection;
     package$collections.joinTo_gcc71v$ = joinTo_8;
     package$collections.joinToString_fmv235$ = joinToString_8;
+    package$ranges.downTo_dqglrj$ = downTo_4;
     package$ranges.step_xsgg7u$ = step;
     package$ranges.until_dqglrj$ = until_4;
+    package$ranges.coerceAtMost_dqglrj$ = coerceAtMost_2;
+    package$ranges.coerceIn_e4yvb3$ = coerceIn_2;
+    var package$sequences = package$kotlin.sequences || (package$kotlin.sequences = {});
+    package$sequences.Sequence = Sequence;
+    package$sequences.asIterable_veqyi0$ = asIterable_10;
     var package$text = package$kotlin.text || (package$kotlin.text = {});
     package$text.get_lastIndex_gw00vp$ = get_lastIndex_13;
     package$text.StringBuilder_init = StringBuilder_init_1;
@@ -7021,6 +7537,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     _.floatArrayIterator = floatArrayIterator;
     _.doubleArrayIterator = doubleArrayIterator;
     _.longArrayIterator = longArrayIterator;
+    _.subSequence = subSequence;
     _.captureStack = captureStack;
     _.BoxedChar = BoxedChar;
     var package$coroutines = package$kotlin.coroutines || (package$kotlin.coroutines = {});
@@ -7030,6 +7547,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$intrinsics.intercepted_f9mg25$ = intercepted;
     var package$js = package$kotlin.js || (package$kotlin.js = {});
     package$kotlin.lazy_klfg04$ = lazy;
+    package$text.toString_if0zpk$ = toString_0;
     package$collections.asList_us0mfu$ = asList;
     package$collections.copyOfRange_5f8l3u$ = copyOfRange_3;
     package$kotlin.Comparator = Comparator;
@@ -7079,6 +7597,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$kotlin.IllegalStateException = IllegalStateException;
     package$kotlin.IndexOutOfBoundsException = IndexOutOfBoundsException;
     package$kotlin.UnsupportedOperationException = UnsupportedOperationException;
+    package$kotlin.NumberFormatException = NumberFormatException;
     package$kotlin.NullPointerException = NullPointerException;
     package$kotlin.ClassCastException = ClassCastException;
     package$kotlin.NoSuchElementException_init = NoSuchElementException_init;
@@ -7104,9 +7623,13 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$text.StringBuilder = StringBuilder;
     package$text.isHighSurrogate_myv2d0$ = isHighSurrogate;
     package$text.isLowSurrogate_myv2d0$ = isLowSurrogate;
+    package$text.toLong_pdl1vz$ = toLong;
+    package$text.checkRadix_za3lpa$ = checkRadix;
+    package$text.digitOf_xvg9q0$ = digitOf;
     package$text.concatToString_355ntz$ = concatToString;
     package$text.concatToString_wlitf7$ = concatToString_0;
     package$text.compareTo_7epoxm$ = compareTo;
+    package$text.regionMatches_h3ii2q$ = regionMatches;
     package$collections.AbstractCollection = AbstractCollection;
     Object.defineProperty(AbstractList, 'Companion', {get: AbstractList$Companion_getInstance});
     package$collections.AbstractList = AbstractList;
@@ -7151,6 +7674,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$random.XorWowRandom = XorWowRandom;
     package$ranges.checkStepIsPositive_44uddq$ = checkStepIsPositive;
     package$text.appendElement_k2zgzt$ = appendElement_0;
+    package$text.equals_4lte5s$ = equals_1;
+    package$text.toLongOrNull_pdl1vz$ = toLongOrNull;
+    package$text.toLongOrNull_6ic1pp$ = toLongOrNull_0;
+    package$text.numberFormatError_y4putb$ = numberFormatError;
+    package$text.substring_i511yc$ = substring_3;
+    package$text.regionMatchesImpl_4c7s8r$ = regionMatchesImpl;
+    package$text.indexOf_l5u8uk$ = indexOf_17;
+    package$text.lastIndexOf_l5u8uk$ = lastIndexOf_16;
+    package$text.split_ip8yn$ = split;
     package$kotlin.Lazy = Lazy;
     Object.defineProperty(package$kotlin, 'UNINITIALIZED_VALUE', {get: UNINITIALIZED_VALUE_getInstance});
     package$kotlin.UnsafeLazyImpl = UnsafeLazyImpl;
@@ -7161,6 +7693,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     package$kotlin.throwOnFailure_iacion$ = throwOnFailure;
     package$kotlin.NotImplementedError = NotImplementedError;
     package$kotlin.Pair = Pair;
+    package$kotlin.to_ujzrz7$ = to;
     MutableMap.prototype.getOrDefault_xwzc9p$ = Map.prototype.getOrDefault_xwzc9p$;
     AbstractMap.prototype.getOrDefault_xwzc9p$ = Map.prototype.getOrDefault_xwzc9p$;
     AbstractMutableMap.prototype.remove_xwzc9p$ = MutableMap.prototype.remove_xwzc9p$;
@@ -7225,6 +7758,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var ensureNotNull = Kotlin.ensureNotNull;
     var NoSuchElementException_init = Kotlin.kotlin.NoSuchElementException_init;
     var Iterator = Kotlin.kotlin.collections.Iterator;
+    var Sequence = Kotlin.kotlin.sequences.Sequence;
     var NotImplementedError = Kotlin.kotlin.NotImplementedError;
     var UNDECIDED;
     var RESUMED;
@@ -8052,7 +8586,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-(function (_, Kotlin, $module$math, $module$infrastructure_model, $module$physics, $module$car_behavior, $module$car_model) {
+(function (_, Kotlin, $module$physics, $module$car_behavior, $module$math, $module$car_model, $module$infrastructure_model) {
   'use strict';
   var throwCCE = Kotlin.throwCCE;
   var Kind_CLASS = Kotlin.Kind.CLASS;
@@ -8064,11 +8598,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var Kind_OBJECT = Kotlin.Kind.OBJECT;
   var Enum = Kotlin.kotlin.Enum;
   var throwISE = Kotlin.throwISE;
-  var Vector3D = $module$math.fr.ciadlab.sim.math.geometry.Vector3D;
-  var hermiteSpline = $module$math.fr.ciadlab.sim.math.geometry.hermiteSpline_1xlc88$;
-  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
-  var road = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.road_xzshke$;
-  var roadNetwork = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.roadNetwork_tsjhya$;
   var physics = $module$physics.fr.ciadlab.sim.physics;
   var unit = $module$physics.fr.ciadlab.sim.physics.unit_38ydlf$;
   var DriverBehavioralState = $module$car_behavior.fr.ciadlab.sim.car.behavior.DriverBehavioralState;
@@ -8084,6 +8613,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var getCallableRef = Kotlin.getCallableRef;
   var reachGoalBehavior = $module$car_behavior.fr.ciadlab.sim.car.behavior.reachGoalBehavior_pdvrc7$;
   var DriverBehavioralAction = $module$car_behavior.fr.ciadlab.sim.car.behavior.DriverBehavioralAction;
+  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_287e2$;
+  var IntRange = Kotlin.kotlin.ranges.IntRange;
+  var toList = Kotlin.kotlin.collections.toList_7wnvza$;
+  var equals = Kotlin.equals;
+  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
+  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
+  var Vector3D = $module$math.fr.ciadlab.sim.math.geometry.Vector3D;
+  var hermiteSpline = $module$math.fr.ciadlab.sim.math.geometry.hermiteSpline_1xlc88$;
+  var listOf = Kotlin.kotlin.collections.listOf_i5x0yv$;
+  var road = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.road_xzshke$;
+  var roadNetwork = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.roadNetwork_tsjhya$;
   var Pair = Kotlin.kotlin.Pair;
   var ensureNotNull = Kotlin.ensureNotNull;
   var IntersectionBuilder$ConnectedSide = $module$infrastructure_model.fr.ciadlab.sim.infrastructure.IntersectionBuilder.ConnectedSide;
@@ -8091,9 +8631,6 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   var MonotoneChain_init = $module$math.fr.ciadlab.sim.math.geometry.MonotoneChain_init;
   var toDoubleArray = Kotlin.kotlin.collections.toDoubleArray_tcduak$;
   var HashSet_init = Kotlin.kotlin.collections.HashSet_init_287e2$;
-  var collectionSizeOrDefault = Kotlin.kotlin.collections.collectionSizeOrDefault_ba2ldo$;
-  var ArrayList_init = Kotlin.kotlin.collections.ArrayList_init_ww73n8$;
-  var ArrayList_init_0 = Kotlin.kotlin.collections.ArrayList_init_287e2$;
   var addAll = Kotlin.kotlin.collections.addAll_ipc267$;
   var last = Kotlin.kotlin.collections.last_2p1efm$;
   var get_lastIndex = Kotlin.kotlin.collections.get_lastIndex_55thoc$;
@@ -8576,7 +9113,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
   }
   LateralControlModel.valueOf_61zpoe$ = LateralControlModel$valueOf;
-  function WebviewSimulationController() {
+  function LateralControlWebviewSimulationController() {
     this.simulationStepTime_0 = unit(10.0, physics.Units.Milliseconds);
     this.currentScaleFactor_0 = 1.0;
     this.onStatsReceived = null;
@@ -8587,20 +9124,21 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     this.simulatedDirectionErrorRange = 0.1;
     this.simulatedLatency = false;
     this.simulatedLatencyDelay = unit(400.0, physics.Units.Milliseconds);
+    this.forcedSpeed = null;
     this.customCommand = null;
     this.lastCommand_0 = new DriverBehavioralAction(0.0, 0.0);
     this.lastCommandTime_0 = 0.0;
   }
-  function WebviewSimulationController$load$lambda(this$WebviewSimulationController, closure$canvas) {
+  function LateralControlWebviewSimulationController$load$lambda(this$LateralControlWebviewSimulationController, closure$canvas) {
     return function (it) {
       var scaleFactor = it.deltaY < 0.0 ? 1.1 : 0.9;
-      this$WebviewSimulationController.currentScaleFactor_0 *= scaleFactor;
+      this$LateralControlWebviewSimulationController.currentScaleFactor_0 *= scaleFactor;
       context2D(closure$canvas).scale(scaleFactor, scaleFactor);
       it.preventDefault();
       return Unit;
     };
   }
-  function WebviewSimulationController$load$lambda_0(closure$drag, closure$previousX, closure$previousY) {
+  function LateralControlWebviewSimulationController$load$lambda_0(closure$drag, closure$previousX, closure$previousY) {
     return function (it) {
       closure$drag.v = true;
       closure$previousX.v = it.pageX;
@@ -8608,35 +9146,24 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return it;
     };
   }
-  function WebviewSimulationController$load$lambda_1(closure$drag) {
+  function LateralControlWebviewSimulationController$load$lambda_1(closure$drag) {
     return function (it) {
       closure$drag.v = false;
       return it;
     };
   }
-  function WebviewSimulationController$load$lambda_2(closure$drag, closure$previousX, this$WebviewSimulationController, closure$previousY, closure$canvas) {
+  function LateralControlWebviewSimulationController$load$lambda_2(closure$drag, closure$previousX, this$LateralControlWebviewSimulationController, closure$previousY, closure$canvas) {
     return function (it) {
       if (closure$drag.v) {
-        var deltaX = (it.pageX - closure$previousX.v) / this$WebviewSimulationController.currentScaleFactor_0;
-        var deltaY = (it.pageY - closure$previousY.v) / this$WebviewSimulationController.currentScaleFactor_0;
+        var deltaX = (it.pageX - closure$previousX.v) / this$LateralControlWebviewSimulationController.currentScaleFactor_0;
+        var deltaY = (it.pageY - closure$previousY.v) / this$LateralControlWebviewSimulationController.currentScaleFactor_0;
         context2D(closure$canvas).translate(deltaX, deltaY);
         closure$previousX.v = it.pageX;
         closure$previousY.v = it.pageY;
       }return Unit;
     };
   }
-  function WebviewSimulationController$load$lambda$lambda($receiver) {
-    $receiver.points = listOf([new Vector3D(0.0, 0.0, 0.0), new Vector3D(100.0, 100.0, 0.0)].concat(copyToArray(hermiteSpline([new Vector3D(100.0, 100.0, 0.0), new Vector3D(50.0, 50.0, 0.0), new Vector3D(150.0, 50.0, 0.0), new Vector3D(0.0, -100.0, 0.0), new Vector3D(100.0, 0.0, 0.0), new Vector3D(-50.0, 50.0, 0.0)], 30)), [new Vector3D(0.0, 100.0, 0.0)], copyToArray(hermiteSpline([new Vector3D(0.0, 100.0, 0.0), new Vector3D(-50.0, 50.0, 0.0), new Vector3D(-50.0, 50.0, 0.0), new Vector3D(0.0, -100.0, 0.0), new Vector3D(0.0, 0.0, 0.0), new Vector3D(50.0, 50.0, 0.0)], 30))));
-    $receiver.oneWay = true;
-    $receiver.forwardLanesCount = 1;
-    $receiver.backwardLanesCount = 0;
-    return Unit;
-  }
-  function WebviewSimulationController$load$lambda_3($receiver) {
-    var eightShapedRoad = road($receiver, WebviewSimulationController$load$lambda$lambda);
-    return Unit;
-  }
-  function WebviewSimulationController$load$lambda$lambda_0($receiver) {
+  function LateralControlWebviewSimulationController$load$lambda$lambda($receiver) {
     background($receiver, Color$Companion_getInstance().rgb_qt1dr2$(230, 230, 230));
     var tmp$;
     tmp$ = $receiver.roadNetwork.roads.iterator();
@@ -8652,7 +9179,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
     return Unit;
   }
-  function WebviewSimulationController$load$lambda$lambda_1(closure$vehicle) {
+  function LateralControlWebviewSimulationController$load$lambda$lambda_0(closure$vehicle) {
     return function ($receiver) {
       $receiver.startX = closure$vehicle.v.position.x;
       $receiver.startY = closure$vehicle.v.position.y;
@@ -8662,19 +9189,19 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       return Unit;
     };
   }
-  function WebviewSimulationController$load$lambda_4(closure$context, closure$canvas, closure$eightShapedRoadNetworkModel, closure$vehicle) {
+  function LateralControlWebviewSimulationController$load$lambda_3(closure$context, closure$canvas, closure$network, closure$vehicle) {
     return function () {
       clear(closure$context, closure$canvas);
-      roadNetworkView(closure$eightShapedRoadNetworkModel, closure$canvas, WebviewSimulationController$load$lambda$lambda_0);
-      line(closure$context, WebviewSimulationController$load$lambda$lambda_1(closure$vehicle));
+      roadNetworkView(closure$network, closure$canvas, LateralControlWebviewSimulationController$load$lambda$lambda);
+      line(closure$context, LateralControlWebviewSimulationController$load$lambda$lambda_0(closure$vehicle));
       carView(closure$context, closure$vehicle.v);
       return Unit;
     };
   }
-  function WebviewSimulationController$load$lambda_5(this$WebviewSimulationController, closure$driverBehavioralState, closure$vehicle, closure$stepCount) {
+  function LateralControlWebviewSimulationController$load$lambda_4(this$LateralControlWebviewSimulationController, closure$driverBehavioralState, closure$vehicle, closure$stepCount) {
     return function () {
       var tmp$, tmp$_0;
-      var statsHandler = this$WebviewSimulationController.onStatsReceived;
+      var statsHandler = this$LateralControlWebviewSimulationController.onStatsReceived;
       if (statsHandler != null) {
         var laneWidth = 3.5;
         var laneOffset = closure$driverBehavioralState.currentRoad.laneOffset(closure$driverBehavioralState.currentLaneIndex);
@@ -8687,70 +9214,107 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
         var left = side > 0.0;
         var angleError = polylineSegment.xy.angle_8a09bi$(closure$vehicle.v.direction);
         var lateralError = distance * (left ? 1 : -1);
-        var controlName = this$WebviewSimulationController.customCommand == null ? this$WebviewSimulationController.lateralControlModel.name : 'Custom command';
-        statsHandler(closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0, controlName, lateralError, angleError);
+        var controlName = this$LateralControlWebviewSimulationController.customCommand == null ? this$LateralControlWebviewSimulationController.lateralControlModel.name : 'Custom command';
+        statsHandler(closure$stepCount.v * this$LateralControlWebviewSimulationController.simulationStepTime_0, controlName, lateralError, angleError);
       }var perceivedVehicle = closure$vehicle.v;
-      if (this$WebviewSimulationController.simulatedPositionError)
-        perceivedVehicle = withSimulatedPositionError(perceivedVehicle, this$WebviewSimulationController.simulatedPositionErrorRadius);
-      if (this$WebviewSimulationController.simulatedDirectionError)
-        perceivedVehicle = withSimulatedDirectionError(perceivedVehicle, this$WebviewSimulationController.simulatedDirectionErrorRange);
-      var currentCustomCommand = this$WebviewSimulationController.customCommand;
+      if (this$LateralControlWebviewSimulationController.simulatedPositionError)
+        perceivedVehicle = withSimulatedPositionError(perceivedVehicle, this$LateralControlWebviewSimulationController.simulatedPositionErrorRadius);
+      if (this$LateralControlWebviewSimulationController.simulatedDirectionError)
+        perceivedVehicle = withSimulatedDirectionError(perceivedVehicle, this$LateralControlWebviewSimulationController.simulatedDirectionErrorRange);
+      var currentCustomCommand = this$LateralControlWebviewSimulationController.customCommand;
       if (currentCustomCommand != null)
         tmp$ = currentCustomCommand(perceivedVehicle, closure$driverBehavioralState);
       else {
-        switch (this$WebviewSimulationController.lateralControlModel.name) {
+        switch (this$LateralControlWebviewSimulationController.lateralControlModel.name) {
           case 'PURE_PURSUIT':
-            tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
+            tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, getCallableRef('constantSpeedControl', function (driverBehavioralState, vehicle) {
+              return ReachGoalBehavior.Companion.constantSpeedControl_hh9uo6$(driverBehavioralState, vehicle);
+            }), getCallableRef('purePursuitLateralControl', function (driverBehavioralState, vehicle) {
               return ReachGoalBehavior.Companion.purePursuitLateralControl_hh9uo6$(driverBehavioralState, vehicle);
-            })).apply_14dthe$(this$WebviewSimulationController.simulationStepTime_0);
+            })).apply_14dthe$(this$LateralControlWebviewSimulationController.simulationStepTime_0);
             break;
           case 'STANLEY':
-            tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, void 0, getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
+            tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, getCallableRef('constantSpeedControl', function (driverBehavioralState, vehicle) {
+              return ReachGoalBehavior.Companion.constantSpeedControl_hh9uo6$(driverBehavioralState, vehicle);
+            }), getCallableRef('stanleyLateralControl', function (driverBehavioralState, vehicle) {
               return ReachGoalBehavior.Companion.stanleyLateralControl_hh9uo6$(driverBehavioralState, vehicle);
-            })).apply_14dthe$(this$WebviewSimulationController.simulationStepTime_0);
+            })).apply_14dthe$(this$LateralControlWebviewSimulationController.simulationStepTime_0);
             break;
-          default:tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState).apply_14dthe$(this$WebviewSimulationController.simulationStepTime_0);
+          default:tmp$ = reachGoalBehavior(perceivedVehicle, closure$driverBehavioralState, getCallableRef('constantSpeedControl', function (driverBehavioralState, vehicle) {
+              return ReachGoalBehavior.Companion.constantSpeedControl_hh9uo6$(driverBehavioralState, vehicle);
+            })).apply_14dthe$(this$LateralControlWebviewSimulationController.simulationStepTime_0);
             break;
         }
       }
       var driverAction = tmp$;
-      if (!this$WebviewSimulationController.simulatedLatency) {
+      var speed = this$LateralControlWebviewSimulationController.forcedSpeed;
+      if (speed != null) {
+        closure$vehicle.v = closure$vehicle.v.changeSpeed_14dthe$(speed);
+      }if (!this$LateralControlWebviewSimulationController.simulatedLatency) {
         closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(driverAction.targetAcceleration, driverAction.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
-        this$WebviewSimulationController.lastCommand_0 = driverAction;
-        this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0;
+        this$LateralControlWebviewSimulationController.lastCommand_0 = driverAction;
+        this$LateralControlWebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * this$LateralControlWebviewSimulationController.simulationStepTime_0;
       } else {
-        if (this$WebviewSimulationController.lastCommandTime_0 + closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0 > this$WebviewSimulationController.simulatedLatencyDelay) {
-          closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$WebviewSimulationController.lastCommand_0.targetAcceleration, this$WebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
-          this$WebviewSimulationController.lastCommand_0 = driverAction;
-          this$WebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * this$WebviewSimulationController.simulationStepTime_0;
+        if (this$LateralControlWebviewSimulationController.lastCommandTime_0 + closure$stepCount.v * this$LateralControlWebviewSimulationController.simulationStepTime_0 > this$LateralControlWebviewSimulationController.simulatedLatencyDelay) {
+          closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$LateralControlWebviewSimulationController.lastCommand_0.targetAcceleration, this$LateralControlWebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
+          this$LateralControlWebviewSimulationController.lastCommand_0 = driverAction;
+          this$LateralControlWebviewSimulationController.lastCommandTime_0 = closure$stepCount.v * this$LateralControlWebviewSimulationController.simulationStepTime_0;
         } else {
-          closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$WebviewSimulationController.lastCommand_0.targetAcceleration, this$WebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
+          closure$vehicle.v = closure$vehicle.v.update_yvo9jy$(this$LateralControlWebviewSimulationController.lastCommand_0.targetAcceleration, this$LateralControlWebviewSimulationController.lastCommand_0.targetWheelAngle, unit(10.0, physics.Units.Milliseconds));
         }
       }
       return tmp$_0 = closure$stepCount.v, closure$stepCount.v = tmp$_0 + 1 | 0, tmp$_0;
     };
   }
-  WebviewSimulationController.prototype.load = function (canvasId) {
-    var tmp$, tmp$_0;
+  LateralControlWebviewSimulationController.prototype.load = function (canvasId) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
     var canvas = Kotlin.isType(tmp$ = document.getElementById(canvasId), HTMLCanvasElement) ? tmp$ : throwCCE();
     var context = Kotlin.isType(tmp$_0 = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$_0 : throwCCE();
-    canvas.onwheel = WebviewSimulationController$load$lambda(this, canvas);
+    canvas.onwheel = LateralControlWebviewSimulationController$load$lambda(this, canvas);
     var drag = {v: false};
     var previousX = {v: 0.0};
     var previousY = {v: 0.0};
-    canvas.onmousedown = WebviewSimulationController$load$lambda_0(drag, previousX, previousY);
-    canvas.onmouseup = WebviewSimulationController$load$lambda_1(drag);
-    canvas.onmousemove = WebviewSimulationController$load$lambda_2(drag, previousX, this, previousY, canvas);
+    canvas.onmousedown = LateralControlWebviewSimulationController$load$lambda_0(drag, previousX, previousY);
+    canvas.onmouseup = LateralControlWebviewSimulationController$load$lambda_1(drag);
+    canvas.onmousemove = LateralControlWebviewSimulationController$load$lambda_2(drag, previousX, this, previousY, canvas);
     context2D(canvas).translate((canvas.width - 200.0) / 2.0, (canvas.height - 200.0) / 2.0);
     context2D(canvas).scale(2.5, 2.5);
-    var eightShapedRoadNetworkModel = roadNetwork(WebviewSimulationController$load$lambda_3);
-    var driverBehavioralState = new DriverBehavioralState(eightShapedRoadNetworkModel.roads.get_za3lpa$(0), 0, unit(50.0, physics.Units.KilometersPerHour), eightShapedRoadNetworkModel.roads.get_za3lpa$(0).end());
+    var network = eightShapedRoadNetworkModel;
+    tmp$_1 = network.roads.get_za3lpa$(0);
+    tmp$_2 = unit(50.0, physics.Units.KilometersPerHour);
+    var driverBehavioralState = new DriverBehavioralState(tmp$_1, 0, ArrayList_init(), tmp$_2, network.roads.get_za3lpa$(0).end());
     var vehicle = {v: new Vehicle(new Vector2D(100.0, 100.0), new Vector2D(unit(50.0, physics.Units.KilometersPerHour), 0.0), 0.0, new Vector2D(1.0, 0.0), 0.0, 3.5, 4.0)};
-    window.setInterval(WebviewSimulationController$load$lambda_4(context, canvas, eightShapedRoadNetworkModel, vehicle), 20);
+    window.setInterval(LateralControlWebviewSimulationController$load$lambda_3(context, canvas, network, vehicle), 20);
     var stepCount = {v: 0};
-    window.setInterval(WebviewSimulationController$load$lambda_5(this, driverBehavioralState, vehicle, stepCount), 10);
+    window.setInterval(LateralControlWebviewSimulationController$load$lambda_4(this, driverBehavioralState, vehicle, stepCount), 10);
   };
-  WebviewSimulationController.$metadata$ = {kind: Kind_CLASS, simpleName: 'WebviewSimulationController', interfaces: []};
+  LateralControlWebviewSimulationController.$metadata$ = {kind: Kind_CLASS, simpleName: 'LateralControlWebviewSimulationController', interfaces: []};
+  var LongitudinalControlModel$INTELLIGENT_DRIVER_MODEL_instance;
+  var LongitudinalControlModel$RT_ACC_instance;
+  function circleShapedRoadNetworkModel$lambda$lambda($receiver) {
+    $receiver.points = listOf([new Vector3D(0.0, 0.0, 0.0), new Vector3D(100.0, 0.0, 0.0)].concat(copyToArray(hermiteSpline([new Vector3D(100.0, 0.0, 0.0), new Vector3D(150.0, 50.0, 0.0), new Vector3D(100.0, 100.0, 0.0)], 30)), [new Vector3D(100.0, 100.0, 0.0), new Vector3D(0.0, 100.0, 0.0)], copyToArray(hermiteSpline([new Vector3D(0.0, 100.0, 0.0), new Vector3D(-50.0, 50.0, 0.0), new Vector3D(0.0, 0.0, 0.0)], 30))));
+    $receiver.oneWay = true;
+    $receiver.forwardLanesCount = 1;
+    $receiver.backwardLanesCount = 0;
+    return Unit;
+  }
+  function circleShapedRoadNetworkModel$lambda($receiver) {
+    var circleShapedRoad = road($receiver, circleShapedRoadNetworkModel$lambda$lambda);
+    return Unit;
+  }
+  var circleShapedRoadNetworkModel;
+  function eightShapedRoadNetworkModel$lambda$lambda($receiver) {
+    $receiver.points = listOf([new Vector3D(0.0, 0.0, 0.0), new Vector3D(100.0, 100.0, 0.0)].concat(copyToArray(hermiteSpline([new Vector3D(100.0, 100.0, 0.0), new Vector3D(50.0, 50.0, 0.0), new Vector3D(150.0, 50.0, 0.0), new Vector3D(0.0, -100.0, 0.0), new Vector3D(100.0, 0.0, 0.0), new Vector3D(-50.0, 50.0, 0.0)], 30)), [new Vector3D(0.0, 100.0, 0.0)], copyToArray(hermiteSpline([new Vector3D(0.0, 100.0, 0.0), new Vector3D(-50.0, 50.0, 0.0), new Vector3D(-50.0, 50.0, 0.0), new Vector3D(0.0, -100.0, 0.0), new Vector3D(0.0, 0.0, 0.0), new Vector3D(50.0, 50.0, 0.0)], 30))));
+    $receiver.oneWay = true;
+    $receiver.forwardLanesCount = 1;
+    $receiver.backwardLanesCount = 0;
+    return Unit;
+  }
+  function eightShapedRoadNetworkModel$lambda($receiver) {
+    var eightShapedRoad = road($receiver, eightShapedRoadNetworkModel$lambda$lambda);
+    return Unit;
+  }
+  var eightShapedRoadNetworkModel;
   var dragging;
   var dragOrigin;
   var currentScaleFactor;
@@ -8876,7 +9440,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     };
   }
   function loadSimViewJs(args) {
-    var tmp$, tmp$_0, tmp$_1;
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
     var canvasProvided = !(args.length === 0);
     var canvas = !canvasProvided ? Kotlin.isType(tmp$ = document.createElement('canvas'), HTMLCanvasElement) ? tmp$ : throwCCE() : Kotlin.isType(tmp$_0 = document.getElementById(args[0]), HTMLCanvasElement) ? tmp$_0 : throwCCE();
     var context = Kotlin.isType(tmp$_1 = canvas.getContext('2d'), CanvasRenderingContext2D) ? tmp$_1 : throwCCE();
@@ -8894,7 +9458,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       ensureNotNull(document.body).appendChild(canvas);
     }var roadNetworkModel = roadNetwork(loadSimViewJs$lambda_4);
     var eightShapedRoadNetworkModel = roadNetwork(loadSimViewJs$lambda_5);
-    var driverBehavioralState = new DriverBehavioralState(eightShapedRoadNetworkModel.roads.get_za3lpa$(0), 0, unit(50.0, physics.Units.KilometersPerHour), eightShapedRoadNetworkModel.roads.get_za3lpa$(0).end());
+    tmp$_2 = eightShapedRoadNetworkModel.roads.get_za3lpa$(0);
+    tmp$_3 = unit(50.0, physics.Units.KilometersPerHour);
+    tmp$_4 = eightShapedRoadNetworkModel.roads.get_za3lpa$(0).end();
+    var driverBehavioralState = new DriverBehavioralState(tmp$_2, 0, ArrayList_init(), tmp$_3, tmp$_4);
     var vehicle = {v: new Vehicle(new Vector2D(100.0, 100.0), new Vector2D(unit(50.0, physics.Units.KilometersPerHour), 0.0), 0.0, new Vector2D(1.0, 0.0), 0.0, 3.5, 4.0)};
     window.setInterval(loadSimViewJs$lambda_6(context, canvas, eightShapedRoadNetworkModel, vehicle), 20);
     window.setInterval(loadSimViewJs$lambda_7(vehicle, driverBehavioralState), 10);
@@ -8928,7 +9495,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       polygonPointsSet.addAll_brywnq$(listOf([sourceBounds.first, sourceBounds.second, destinationBounds.first, destinationBounds.second]));
     }
     var tmp$_2 = MonotoneChain_init();
-    var destination = ArrayList_init(collectionSizeOrDefault(polygonPointsSet, 10));
+    var destination = ArrayList_init_0(collectionSizeOrDefault(polygonPointsSet, 10));
     var tmp$_3;
     tmp$_3 = polygonPointsSet.iterator();
     while (tmp$_3.hasNext()) {
@@ -8936,7 +9503,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       destination.add_11rb$(new Vector2D(item.x, item.y));
     }
     var convexHull = tmp$_2.findHullVertices_7mijst$(destination);
-    var destination_0 = ArrayList_init_0();
+    var destination_0 = ArrayList_init();
     var tmp$_4;
     tmp$_4 = convexHull.iterator();
     while (tmp$_4.hasNext()) {
@@ -9069,7 +9636,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var width = $receiver.canvas.width;
     context.save();
     var $receiver_0 = road.points;
-    var destination = ArrayList_init_0();
+    var destination = ArrayList_init();
     var tmp$_1;
     tmp$_1 = $receiver_0.iterator();
     while (tmp$_1.hasNext()) {
@@ -9081,7 +9648,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var middleLineOffset = $receiver.laneWidth * ((road.backwardLanesCount - road.forwardLanesCount | 0) + (road.totalLanesCount % 2 !== 0 ? 0.5 : 0.0));
     if (!road.oneWay) {
       var $receiver_1 = offset_0(road.points, middleLineOffset);
-      var destination_0 = ArrayList_init_0();
+      var destination_0 = ArrayList_init();
       var tmp$_2;
       tmp$_2 = $receiver_1.iterator();
       while (tmp$_2.hasNext()) {
@@ -9095,7 +9662,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
       for (var i = 1; i < tmp$; i++) {
         var laneOffset = -$receiver.laneWidth * i + middleLineOffset;
         var $receiver_2 = offset_0(road.points, laneOffset);
-        var destination_1 = ArrayList_init_0();
+        var destination_1 = ArrayList_init();
         var tmp$_3;
         tmp$_3 = $receiver_2.iterator();
         while (tmp$_3.hasNext()) {
@@ -9109,7 +9676,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     for (var i_0 = 1; i_0 < tmp$_0; i_0++) {
       var laneOffset_0 = $receiver.laneWidth * i_0 + middleLineOffset;
       var $receiver_3 = offset_0(road.points, laneOffset_0);
-      var destination_2 = ArrayList_init_0();
+      var destination_2 = ArrayList_init();
       var tmp$_4;
       tmp$_4 = $receiver_3.iterator();
       while (tmp$_4.hasNext()) {
@@ -9121,7 +9688,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     }
     if (debug) {
       var $receiver_4 = road.points;
-      var destination_3 = ArrayList_init_0();
+      var destination_3 = ArrayList_init();
       var tmp$_5;
       tmp$_5 = $receiver_4.iterator();
       while (tmp$_5.hasNext()) {
@@ -9145,7 +9712,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   }
   function offset_0(points, offset) {
     var tmp$;
-    var result = ArrayList_init_0();
+    var result = ArrayList_init();
     var beginDirection = points.get_za3lpa$(1).minus_8a09cd$(points.get_za3lpa$(0)).normalize();
     var beginNormal = new Vector3D(-beginDirection.y, beginDirection.x, beginDirection.z);
     result.add_11rb$(points.get_za3lpa$(0).plus_8a09cd$(beginNormal.times_14dthe$(offset)));
@@ -9207,7 +9774,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   Object.defineProperty(LateralControlModel, 'CURVATURE_FOLLOWING', {get: LateralControlModel$CURVATURE_FOLLOWING_getInstance});
   var package$controllers = package$viewjs.controllers || (package$viewjs.controllers = {});
   package$controllers.LateralControlModel = LateralControlModel;
-  package$controllers.WebviewSimulationController = WebviewSimulationController;
+  package$controllers.LateralControlWebviewSimulationController = LateralControlWebviewSimulationController;
   package$viewjs.main = main;
   package$viewjs.loadSimViewJs = loadSimViewJs;
   var package$network = package$viewjs.network || (package$viewjs.network = {});
@@ -9222,6 +9789,8 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   package$network.width_tc1cxw$ = width;
   var package$car = package$viewjs.car || (package$viewjs.car = {});
   package$car.carView_611qks$ = carView;
+  circleShapedRoadNetworkModel = roadNetwork(circleShapedRoadNetworkModel$lambda);
+  eightShapedRoadNetworkModel = roadNetwork(eightShapedRoadNetworkModel$lambda);
   dragging = false;
   dragOrigin = new Pair(0.0, 0.0);
   currentScaleFactor = 1.0;
@@ -9229,7 +9798,122 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
   imageBasePath = 'assets/js/sim-view-js';
   main();
   return _;
-}(module.exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js"), __webpack_require__(/*! math */ "./kotlin-dce/math.js"), __webpack_require__(/*! infrastructure-model */ "./kotlin-dce/infrastructure-model.js"), __webpack_require__(/*! physics */ "./kotlin-dce/physics.js"), __webpack_require__(/*! car-behavior */ "./kotlin-dce/car-behavior.js"), __webpack_require__(/*! car-model */ "./kotlin-dce/car-model.js")));
+}(module.exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js"), __webpack_require__(/*! physics */ "./kotlin-dce/physics.js"), __webpack_require__(/*! car-behavior */ "./kotlin-dce/car-behavior.js"), __webpack_require__(/*! math */ "./kotlin-dce/math.js"), __webpack_require__(/*! car-model */ "./kotlin-dce/car-model.js"), __webpack_require__(/*! infrastructure-model */ "./kotlin-dce/infrastructure-model.js")));
+
+
+
+/***/ }),
+
+/***/ "./kotlin-dce/utils.js":
+/*!*****************************!*\
+  !*** ./kotlin-dce/utils.js ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
+  if (true)
+    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(/*! kotlin */ "./kotlin-dce/kotlin.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  else {}
+}(this, function (_, Kotlin) {
+  'use strict';
+  var L1 = Kotlin.Long.ONE;
+  var toString = Kotlin.kotlin.text.toString_if0zpk$;
+  var Random = Kotlin.kotlin.random.Random;
+  var toByte = Kotlin.toByte;
+  var split = Kotlin.kotlin.text.split_ip8yn$;
+  var IllegalArgumentException_init = Kotlin.kotlin.IllegalArgumentException_init_pdl1vj$;
+  var toLong = Kotlin.kotlin.text.toLong_pdl1vz$;
+  var Kind_OBJECT = Kotlin.Kind.OBJECT;
+  var Kind_CLASS = Kotlin.Kind.CLASS;
+  var Comparable = Kotlin.kotlin.Comparable;
+  var L0 = Kotlin.Long.ZERO;
+  var copyToArray = Kotlin.kotlin.collections.copyToArray;
+  function UUID() {
+    UUID$Companion_getInstance();
+    this.mostSignificantBits = null;
+    this.leastSignificantBits = null;
+  }
+  UUID.prototype.compareTo_11rb$ = function (other) {
+    return this.mostSignificantBits.compareTo_11rb$(other.mostSignificantBits) < 0 ? -1 : this.mostSignificantBits.compareTo_11rb$(other.mostSignificantBits) > 0 ? 1 : this.leastSignificantBits.compareTo_11rb$(other.leastSignificantBits) < 0 ? -1 : this.leastSignificantBits.compareTo_11rb$(other.leastSignificantBits) > 0 ? 1 : 0;
+  };
+  UUID.prototype.toString = function () {
+    return this.digits_0(this.mostSignificantBits.shiftRight(32), 8) + '-' + this.digits_0(this.mostSignificantBits.shiftRight(16), 4) + '-' + this.digits_0(this.mostSignificantBits, 4) + '-' + this.digits_0(this.leastSignificantBits.shiftRight(48), 4) + '-' + this.digits_0(this.leastSignificantBits, 12);
+  };
+  UUID.prototype.digits_0 = function (val, digits) {
+    var hi = L1.shiftLeft(digits * 4 | 0);
+    return toString(hi.or(val.and(hi.subtract(Kotlin.Long.fromInt(1)))), 16).substring(1);
+  };
+  function UUID$Companion() {
+    UUID$Companion_instance = this;
+  }
+  UUID$Companion.prototype.randomUUID = function () {
+    var randomBytes = new Int8Array(16);
+    Random.Default.nextBytes_fqrh44$(randomBytes);
+    randomBytes[6] = toByte(randomBytes[6] & toByte(15));
+    randomBytes[6] = toByte(randomBytes[6] | toByte(64));
+    randomBytes[8] = toByte(randomBytes[8] & toByte(63));
+    randomBytes[8] = toByte(randomBytes[8] | toByte(128));
+    return UUID_init_0(randomBytes);
+  };
+  UUID$Companion.prototype.fromString_61zpoe$ = function (name) {
+    var components = copyToArray(split(name, ['-']));
+    if (components.length !== 5)
+      throw IllegalArgumentException_init('Invalid UUID string: ' + name);
+    for (var i = 0; i <= 4; i++)
+      components[i] = '0x' + components[i];
+    var mostSigBits = toLong(components[0]);
+    mostSigBits = mostSigBits.shiftLeft(16);
+    mostSigBits = mostSigBits.or(toLong(components[1]));
+    mostSigBits = mostSigBits.shiftLeft(16);
+    mostSigBits = mostSigBits.or(toLong(components[2]));
+    var leastSigBits = toLong(components[3]);
+    leastSigBits = leastSigBits.shiftLeft(48);
+    leastSigBits = leastSigBits.or(toLong(components[4]));
+    return UUID_init(mostSigBits, leastSigBits);
+  };
+  UUID$Companion.$metadata$ = {kind: Kind_OBJECT, simpleName: 'Companion', interfaces: []};
+  var UUID$Companion_instance = null;
+  function UUID$Companion_getInstance() {
+    if (UUID$Companion_instance === null) {
+      new UUID$Companion();
+    }return UUID$Companion_instance;
+  }
+  UUID.$metadata$ = {kind: Kind_CLASS, simpleName: 'UUID', interfaces: [Comparable]};
+  function UUID_init(mostSignificantBits, leastSignificantBits, $this) {
+    $this = $this || Object.create(UUID.prototype);
+    UUID.call($this);
+    $this.mostSignificantBits = mostSignificantBits;
+    $this.leastSignificantBits = leastSignificantBits;
+    return $this;
+  }
+  function UUID_init_0(data, $this) {
+    $this = $this || Object.create(UUID.prototype);
+    UUID.call($this);
+    var msb = L0;
+    var lsb = L0;
+    for (var i = 0; i <= 7; i++) {
+      msb = msb.shiftLeft(8).or(Kotlin.Long.fromInt(toByte(data[i] & toByte(255))));
+    }
+    for (var i_0 = 8; i_0 <= 15; i_0++) {
+      lsb = lsb.shiftLeft(8).or(Kotlin.Long.fromInt(toByte(data[i_0] & toByte(255))));
+    }
+    $this.mostSignificantBits = msb;
+    $this.leastSignificantBits = lsb;
+    return $this;
+  }
+  Object.defineProperty(UUID, 'Companion', {get: UUID$Companion_getInstance});
+  var package$fr = _.fr || (_.fr = {});
+  var package$ciadlab = package$fr.ciadlab || (package$fr.ciadlab = {});
+  var package$sim = package$ciadlab.sim || (package$ciadlab.sim = {});
+  var package$utils = package$sim.utils || (package$sim.utils = {});
+  package$utils.UUID_init_3pjtqy$ = UUID_init;
+  package$utils.UUID = UUID;
+  return _;
+}));
 
 
 

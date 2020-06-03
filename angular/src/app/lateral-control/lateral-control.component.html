@@ -28,6 +28,12 @@
                       matTooltip="Commands will be applied with a delay of 400ms" matTooltipPosition="below">
       Simulated latency
     </mat-slide-toggle>
+    &nbsp;
+    <mat-form-field>
+      <mat-label>Speed (m/s)</mat-label>
+      <input matInput type="number" [(ngModel)]="speed" (change)="updateSpeed()" />
+    </mat-form-field>
+
     <br />
     <button mat-stroked-button color="primary" (click)="showCustomCommandPopup()">Propose a custom command</button>
     &nbsp;
