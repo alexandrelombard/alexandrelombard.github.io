@@ -38,7 +38,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
   simulatedPositionError: boolean = true;
   simulatedDirectionError: boolean = true;
   simulatedLatency: boolean = true;
-  speed = 0.0;
+  speed: number = null;
 
   strategies: LateralControlStrategy[] = [
     {value: 'pure-pursuit', viewValue: 'Pure-Pursuit'},
@@ -165,7 +165,7 @@ export class LateralControlComponent implements OnInit, AfterViewInit {
   }
 
   updateSpeed() {
-
+    this.simulationWebviewController.forcedSpeed = this.speed;
   }
 
   /**
