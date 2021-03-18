@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
-declare const simViewApp: any;
+declare const mps: any;
 
 @Component({
   selector: 'app-two-intersections',
@@ -13,7 +13,7 @@ export class TwoIntersectionsComponent implements OnInit {
 
   @ViewChild('canvasElement', {static: true}) canvasElement: ElementRef;
 
-  private simulationWebViewPackage = simViewApp.fr.ciadlab.sim.infrastructure.viewjs;
+  private simulationWebViewPackage = mps.fr.ciadlab.sim.infrastructure.viewjs;
   private simulationWebviewController;
 
   ngOnInit(): void {
