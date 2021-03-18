@@ -31,7 +31,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "src/assets/js/sim-view-js/sim-view-js.js"
+              "src/assets/js/sim-view-js/sim-view-js.js",
+              "src/assets/js/mps/mps.js"
             ],
             "sourceMap": true,
             "vendorSourceMap": true
