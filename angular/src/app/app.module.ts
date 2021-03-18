@@ -23,13 +23,15 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {CodeEditorModule} from "@ngstack/code-editor";
+import { TwoIntersectionsComponent } from './two-intersections/two-intersections.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     LateralControlComponent,
-    CustomLateralControlDialog
+    CustomLateralControlDialog,
+    TwoIntersectionsComponent
   ],
   imports: [
     BrowserModule,

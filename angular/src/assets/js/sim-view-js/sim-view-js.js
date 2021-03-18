@@ -522,16 +522,15 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
     var left = side > 0.0;
     var angleError = polylineSegment.xy.angle_8a09bi$(vehicle.direction);
     var lateralError = distance * (left ? 1 : -1);
-    var b = vehicle.velocity.norm * 2.0;
+    var x = vehicle.velocity.norm;
+    var b = Math_0.sqrt(x) * 2.0;
     var lookAheadDistance = Math_0.max(2.0, b);
     var lookAheadLength = projectionData.length + lookAheadDistance < length(lane) ? projectionData.length + lookAheadDistance : projectionData.length + lookAheadDistance - length(lane);
     var lookAheadTangent = pointAtLength(lane, lookAheadLength + 1).minus_8a09cd$(pointAtLength(lane, lookAheadLength - 1)).normalize();
     var subtraction = lookAheadTangent.xy.minus_8a09bi$(vehicle.direction);
     var $receiver = lookAheadTangent.xy.angle_8a09bi$(vehicle.direction);
     var curvature = Math_0.sign($receiver) * subtraction.norm;
-    var tmp$ = vehicle.velocity.norm;
-    var b_0 = vehicle.velocity.norm * 2.0;
-    return lombardLateralControl(angleError, lateralError, left, tmp$, 0.1, curvature, Math_0.max(2.0, b_0), vehicle.wheelBase);
+    return lombardLateralControl(angleError, lateralError, left, vehicle.velocity.norm, 0.1, curvature, lookAheadDistance, vehicle.wheelBase);
   };
   ReachGoalBehavior$Companion.prototype.constantSpeedControl_hh9uo6$ = function (driverBehavioralState, vehicle) {
     return 0.0;

@@ -1,0 +1,12 @@
+<mat-card>
+  <mat-card-title>Two Intersections Simulations</mat-card-title>
+
+  <mat-card-subtitle>
+    This simulation illustrates the ability of the present simulator to model networks of intersections and the
+    evolution of vehicle on the roads.
+  </mat-card-subtitle>
+
+  <div #sizer style="width: 100%"></div>
+
+  <canvas #canvasElement id="sim-view-js-canvas" [width]="sizer.offsetWidth" height="340"></canvas>
+</mat-card>
