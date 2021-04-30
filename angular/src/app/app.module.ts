@@ -24,6 +24,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
 import {CodeEditorModule} from "@ngstack/code-editor";
 import { TwoIntersectionsComponent } from './two-intersections/two-intersections.component';
+import { HighwayTwoLanesComponent } from './highway-two-lanes/highway-two-lanes.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { TwoIntersectionsComponent } from './two-intersections/two-intersections
     NavComponent,
     LateralControlComponent,
     CustomLateralControlDialog,
-    TwoIntersectionsComponent
+    TwoIntersectionsComponent,
+    HighwayTwoLanesComponent
   ],
   imports: [
     BrowserModule,

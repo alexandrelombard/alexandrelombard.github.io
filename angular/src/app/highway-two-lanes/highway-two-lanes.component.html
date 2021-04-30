@@ -1,0 +1,12 @@
+<mat-card>
+  <mat-card-title>Highway Two Lanes Simulations</mat-card-title>
+
+  <mat-card-subtitle>
+    This simulation illustrates the ability of the present simulator to make vehicles evolve on a highway (note: work
+    in progress - the perception of the vehicles for the lane-change operation is not fully working)
+  </mat-card-subtitle>
+
+  <div #sizer style="width: 100%"></div>
+
+  <canvas #canvasElement id="sim-view-js-canvas" [width]="sizer.offsetWidth" height="720"></canvas>
+</mat-card>
